@@ -38,6 +38,7 @@ export class UserInterface {
     }
     
     __setup_eventListeners() {
+        // Sets up all event listeners on the UI elements
         const optionsMenu = document.querySelector(".options__menu");
         const settingsMenu = document.querySelector(".settings .options__menu-sidemenu");
         const difficultyMenu = document.querySelector(".difficulty .options__menu-sidemenu")
@@ -63,6 +64,7 @@ export class UserInterface {
 
         difficultyMenu.addEventListener('click', (e) => {
             this.config.difficulty = e.target.getAttribute('data-option');
+            // Can add color to the currently selected option
         })
     }
 }
