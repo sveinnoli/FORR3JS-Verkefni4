@@ -1,7 +1,13 @@
+:root {
+    --menu__border-width: 1px;
+    --menu__border-color: white;
+}
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    color: white;
 }
 
 body {
@@ -10,6 +16,130 @@ body {
     overflow: hidden;
 }
 
-#canvas {
-    border: 5px solid red;
+/* Options menu items */
+.game-title {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 30px;
+}
+
+.options-overlay {
+    position: absolute;
+    height: 100vh;
+    width: 100vw;
+    background: black;
+}
+
+.options-body {
+    height: 40%;
+    position: relative;
+}
+
+/* This is used to order the menu lists */
+.options-menuscreen {
+    height: 100%;
+    display:flex;
+    flex-direction: column;
+}
+
+.difficulty {
+    transform: translateX(500%);
+}
+
+.settings {
+    transform: translateX(500%);
+}
+
+.mainmenu, .settings, .difficulty {
+    background: linear-gradient(0deg, rgba(42,155,157,1) 0%, rgba(41,166,212,1) 46%, rgba(54,119,209,1) 100%);
+    border-radius: 10px;
+    width: 100%;
+    position: absolute;
+    transition: transform 1s;
+}
+
+.options-return {
+    position: absolute;
+    left: 0;
+    top: 0;
+    cursor: pointer;
+    z-index: 5;
+    margin: 5px 0 0 10px;
+}
+
+.options-return:before {
+    position: relative;
+    /* Offset height to match text height */
+    top: 7px;
+    content:url('arrow.svg');
+    max-height: 10px;
+    max-width: 10px;
+}
+
+.options-return:hover{
+    opacity: 0.7;
+}
+
+.options__menu, .options__menu-sidemenu {
+    text-align: center;
+    width: 100%;
+}
+
+.options__menu-item {
+    font-size: 40px;
+    cursor: pointer;
+    border-bottom: var(--menu__border-width) solid var(--menu__border-color);
+    padding: 5px 0;
+}
+
+.options__menu-item > * {
+    pointer-events: none;
+}
+
+/* Gives first menu item a border on the top */
+.options__menu-item {
+    border-top: var(--menu__border-width) solid var(--menu__border-color);
+}
+
+.options__menu-item:hover {
+    opacity: 0.65;
+}
+
+.options__menu-sidemenu {
+    position: relative;
+    left: 0%;
+}
+
+.container {
+    width: 50%;
+    padding: 0 15px;
+    margin: 0 auto;
+    height: 100%;
+}
+
+.options-skeleton {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+@media screen and (max-width: 1280px) {
+    .container {
+        width: 768px;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .container {
+        width: 512px;
+    }
+}
+
+@media screen and (max-width: 512px) {
+    .container {
+        width: auto;
+        padding: 0;
+    }
 }

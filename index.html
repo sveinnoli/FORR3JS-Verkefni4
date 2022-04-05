@@ -8,10 +8,45 @@
     <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
-    <div class="options">
-        
+    <div class="options-overlay">
+        <div class="container">
+            <div class="game-title">
+                <h1>Asteroids</h1>
+            </div>
+            <div class="options-body">
+                <h3 class="options-return" hidden>Go back</h3>
+               <div class="options-menuscreen">
+                    <div class="options-skeleton mainmenu" hidden>
+                        <h2 class="menu-title">Main menu</h2>
+                        <div class="options__menu" >
+                            <div class="options__menu-item" data-option="start">Start game</div>
+                            <div class="options__menu-item" data-option="difficulty">Difficulty</div>
+                            <div class="options__menu-item" data-option="settings">
+                                <span>Settings</span>
+                            </div>
+                        </div>
+                            
+                    </div>
+                    <div class="options-skeleton settings" hidden>
+                        <h2 class="menu-title">Settings</h2>
+                        <div class="options__menu-sidemenu">
+                            <div class="options__menu-item">Empty for now.</div>
+                            <p>asd</p>
+                        </div>
+                    </div>
+                    <div class="options-skeleton difficulty" hidden>
+                        <h2 class="menu-title">Difficulty</h2>
+                        <div class="options__menu-sidemenu">
+                            <div class="options__menu-item" data-option="easy">Easy</div>
+                            <div class="options__menu-item" data-option="medium">Medium</div>
+                            <div class="options__menu-item" data-option="hard">Hard</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
     <canvas id="canvas"></canvas>
-    <script src="main.js"></script>
+    <script type="module" src="scripts/main.js"></script>
 </body>
 </html>

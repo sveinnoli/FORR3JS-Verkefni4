@@ -1,9 +1,8 @@
 import {UserInterface} from "./userInterface.js"
-
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
-let userInterface = new UserInterface(canvas);
 
+let userInterface = new UserInterface(canvas)
 // Handles resizing the window for example when rotating the phone
 function handleResize() {
     let computedStyle = getComputedStyle(canvas);
@@ -16,7 +15,7 @@ window.addEventListener("resize", handleResize);
 window.addEventListener("DOMContentLoaded", handleResize);
 
 
-class BasicFunctionality {
+class GameObject {
     constructor(x, y, xv, yv) {
         this.x = x;
         this.y = y;
@@ -24,9 +23,13 @@ class BasicFunctionality {
         this.yv = yv;
     }
 
+    move() {
+
+    }
+
 }
 
-class Asteroid extends BasicFunctionality {
+class Asteroid extends GameObject {
     constructor(x, y, xv, yv) {
         super(x, y, xv, yv);
     }
@@ -41,7 +44,7 @@ class Asteroid extends BasicFunctionality {
     }
 };
 
-class Ship extends BasicFunctionality {
+class Ship extends GameObject {
     constructor(x, y, xv, yv) {
         super(x, y, xv, yv);
     }
