@@ -1,10 +1,8 @@
-// Settings for the game
-const config = {
-
-}
+import {UserInterface} from "./userInterface.js"
 
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
+let userInterface = new UserInterface(canvas);
 
 // Handles resizing the window for example when rotating the phone
 function handleResize() {
@@ -17,20 +15,6 @@ function handleResize() {
 window.addEventListener("resize", handleResize);
 window.addEventListener("DOMContentLoaded", handleResize);
 
-
-function toggleFullScreen() {
-    let elem = canvas;
-
-    if (!document.fullscreenElement) {
-            elem.requestFullscreen().catch(err => {
-            alert(`Error attempting to enable fullscreen mode: ${err.message} (${err.name})`);
-        });
-    } else {
-        document.exitFullscreen();
-    }
-}
-
-toggleFullScreen();
 
 class BasicFunctionality {
     constructor(x, y, xv, yv) {
@@ -47,12 +31,13 @@ class Asteroid extends BasicFunctionality {
         super(x, y, xv, yv);
     }
 
-    draw() {
+    render() {
         ctx.beginPath();
         ctx.fillStyle = "blue";
         ctx.arc(this.x, this.y, 25, 0, 2 * Math.PI);
         ctx.fill();
-        window.requestAnimationFrame(this.draw.bind(this));
+        // Example of how to bind to another object to allow the use of this
+        // window.requestAnimationFrame(this.draw.bind(this));
     }
 };
 
@@ -60,12 +45,14 @@ class Ship extends BasicFunctionality {
     constructor(x, y, xv, yv) {
         super(x, y, xv, yv);
     }
+
+    render() {
+        ctx.beginPath();
+        ctx.fillStyle = "red";
+        ctx.arc(this.x, this.y, 25, 0, 2 * Math.PI);
+        ctx.fill();
+    }
 };
 
 
-testZoid = new Asteroid(50, 100, 5, 5);
-function mainLoop() {
-    testZoid.draw();
-}
 
-window.requestAnimationFrame(mainLoop);
