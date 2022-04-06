@@ -21,17 +21,15 @@
                         <div class="options__menu" >
                             <div class="options__menu-item" data-option="start">Start game</div>
                             <div class="options__menu-item" data-option="difficulty">Difficulty</div>
-                            <div class="options__menu-item" data-option="settings">
-                                <span>Settings</span>
-                            </div>
+                            <div class="options__menu-item" data-option="settings">Settings</div>
                         </div>
                             
                     </div>
                     <div class="options-skeleton settings" hidden>
                         <h2 class="menu-title">Settings</h2>
                         <div class="options__menu-sidemenu">
-                            <div class="options__menu-item">Empty for now.</div>
-                            <p>asd</p>
+                            <div class="options__menu-item" data-option="cheat">Cheat mode</div>
+                            <div class="options__menu-item" data-option="normal">Normal mode</div>
                         </div>
                     </div>
                     <div class="options-skeleton difficulty" hidden>
@@ -47,6 +45,8 @@
         </div>
     </div>
     <canvas id="canvas"></canvas>
-    <script type="module" src="scripts/main.js"></script>
+    <script type="module" src="scripts/main.js" async></script>
+    <!-- This element is used to indicate gamestate options are mainmenu || paused || playing) -->
+    <data name="game__state" hidden gamestate="mainmenu"></data>
 </body>
 </html>

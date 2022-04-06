@@ -13,3 +13,4 @@ Leikjagerð - Asteroid
 
 ### Main menu
 - Need to add a fullscreen button
+- Add a way to make the back menu recursive to allow for multiple menus

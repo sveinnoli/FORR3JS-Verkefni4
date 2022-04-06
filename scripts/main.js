@@ -1,8 +1,12 @@
-import {UserInterface} from "./userInterface.js"
-const canvas = document.getElementById('canvas');
-const ctx = canvas.getContext('2d');
+import {Game} from "./game.js"
+import {UserInterface} from './userInterface.js'
 
-let userInterface = new UserInterface(canvas)
+// Initializes game when User prompts to start
+let game = new Game(canvas);
+
+// Initializes event listeners
+let userInterface = new UserInterface(game);
+
 // Handles resizing the window for example when rotating the phone
 function handleResize() {
     let computedStyle = getComputedStyle(canvas);
@@ -15,47 +19,6 @@ window.addEventListener("resize", handleResize);
 window.addEventListener("DOMContentLoaded", handleResize);
 
 
-class GameObject {
-    constructor(x, y, xv, yv) {
-        this.x = x;
-        this.y = y;
-        this.xv = xv;
-        this.yv = yv;
-    }
-
-    move() {
-
-    }
-
-}
-
-class Asteroid extends GameObject {
-    constructor(x, y, xv, yv) {
-        super(x, y, xv, yv);
-    }
-
-    render() {
-        ctx.beginPath();
-        ctx.fillStyle = "blue";
-        ctx.arc(this.x, this.y, 25, 0, 2 * Math.PI);
-        ctx.fill();
-        // Example of how to bind to another object to allow the use of this
-        // window.requestAnimationFrame(this.draw.bind(this));
-    }
-};
-
-class Ship extends GameObject {
-    constructor(x, y, xv, yv) {
-        super(x, y, xv, yv);
-    }
-
-    render() {
-        ctx.beginPath();
-        ctx.fillStyle = "red";
-        ctx.arc(this.x, this.y, 25, 0, 2 * Math.PI);
-        ctx.fill();
-    }
-};
 
 
 

@@ -16,6 +16,10 @@ body {
     overflow: hidden;
 }
 
+#canvas {
+    /* Add some customised stuff to canvas */
+}
+
 /* Options menu items */
 .game-title {
     text-align: center;
@@ -61,7 +65,7 @@ body {
 .options-return {
     position: absolute;
     left: 0;
-    top: 0;
+    top: -10px;
     cursor: pointer;
     z-index: 5;
     margin: 5px 0 0 10px;
@@ -118,11 +122,11 @@ body {
 }
 
 .options-skeleton {
-    height: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    padding: 10px 0;
 }
 
 @media screen and (max-width: 1280px) {
@@ -140,6 +144,7 @@ body {
 @media screen and (max-width: 512px) {
     .container {
         width: auto;
-        padding: 0;
     }
 }
+
+/* `Changes to height*/
