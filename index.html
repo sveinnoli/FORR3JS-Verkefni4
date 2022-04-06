@@ -13,40 +13,44 @@
             <div class="game-title">
                 <h1>Asteroids</h1>
             </div>
-            <div class="options-body">
-                <h3 class="options-return" hidden>Go back</h3>
-               <div class="options-menuscreen">
-                    <div class="options-skeleton mainmenu" hidden>
-                        <h2 class="menu-title">Main menu</h2>
-                        <div class="options__menu" >
-                            <div class="options__menu-item" data-option="start">Start game</div>
-                            <div class="options__menu-item" data-option="difficulty">Difficulty</div>
-                            <div class="options__menu-item" data-option="settings">Settings</div>
-                        </div>
-                            
+            <div class="options-menuscreen">
+                <h3 class="options-return" hidden>Back</h3>
+                <div class="options-fullscreen"></div>
+                <div class="options-skeleton mainmenu">
+                    <h2 class="menu-title">Main menu</h2>
+                    <!-- place some (butt)ons here -->
+                    <div class="options__menu" >
+                        <div class="options__menu-item" data-option="start">Start game</div>
+                        <div class="options__menu-item" data-option="difficulty">Difficulty</div>
+                        <div class="options__menu-item" data-option="settings">Settings</div>
                     </div>
-                    <div class="options-skeleton settings" hidden>
-                        <h2 class="menu-title">Settings</h2>
-                        <div class="options__menu-sidemenu">
-                            <div class="options__menu-item" data-option="cheat">Cheat mode</div>
-                            <div class="options__menu-item" data-option="normal">Normal mode</div>
-                        </div>
+                    
+                </div>
+                <div class="options-skeleton settings">
+                    <h2 class="menu-title">Settings</h2>
+                    <div class="options__menu-sidemenu">
+                        <div class="options__menu-item" data-option="cheat">Cheat mode</div>
+                        <div class="options__menu-item" data-option="normal">Normal mode</div>
                     </div>
-                    <div class="options-skeleton difficulty" hidden>
-                        <h2 class="menu-title">Difficulty</h2>
-                        <div class="options__menu-sidemenu">
-                            <div class="options__menu-item" data-option="easy">Easy</div>
-                            <div class="options__menu-item" data-option="medium">Medium</div>
-                            <div class="options__menu-item" data-option="hard">Hard</div>
-                        </div>
+                </div>
+                <div class="options-skeleton difficulty">
+                    <h2 class="menu-title">Difficulty</h2>
+                    <div class="options__menu-sidemenu">
+                        <div class="options__menu-item" data-option="easy">Easy</div>
+                        <div class="options__menu-item" data-option="medium">Medium</div>
+                        <div class="options__menu-item" data-option="hard">Hard</div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <canvas id="canvas"></canvas>
-    <script type="module" src="scripts/main.js" async></script>
-    <!-- This element is used to indicate gamestate options are mainmenu || paused || playing) -->
-    <data name="game__state" hidden gamestate="mainmenu"></data>
+
+    
+    <div class="fullscreen">
+        <canvas id="canvas">abcdef</canvas>
+    </div>
+<script type="module" src="scripts/main.js" async></script>
+<!-- This element is used to indicate gamestate options are mainmenu || paused || playing) -->
+<data name="game-state" hidden gamestate="mainmenu"></data>
 </body>
 </html>

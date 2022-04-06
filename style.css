@@ -10,80 +10,154 @@
     color: white;
 }
 
-body {
-    color: white;
-    background-color: darkgrey;
+html, body {
     overflow: hidden;
+    
+}
+ 
+/* Overwrites display */
+[hidden] { display: none !important; }
+
+body {
+    position: relative;
+    color: white;
+    background-color: black;
+    overflow-x: hidden;
+    height: 100%;
+}
+  
+/* Allows canvas to maintain aspect ratio 16:9 */
+.fullscreen {
+    /* Give it less priority than the menu window */
+    z-index: -1;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 #canvas {
-    /* Add some customised stuff to canvas */
+    object-fit: contain;
+    background: grey;
+    border: 10px solid white;
+    max-height: 100%;
+    width: 100%;
+    max-width: 100%;
 }
 
-/* Options menu items */
-.game-title {
-    text-align: center;
-    margin-top: 20px;
-    font-size: 30px;
+
+#canvas {
+    border: 10px solid black;
+
 }
 
 .options-overlay {
-    position: absolute;
     height: 100vh;
     width: 100vw;
     background: black;
 }
 
-.options-body {
-    height: 40%;
-    position: relative;
+/* Options menu items */
+.game-title {
+    text-align: center;
+    font-size: 30px;
 }
+
+.menu-title {
+    align-self: center;
+    padding: 10px;
+    font-size: 30px;
+}
+
+
 
 /* This is used to order the menu lists */
 .options-menuscreen {
+    position: relative;
     height: 100%;
     display:flex;
     flex-direction: column;
+    
 }
 
-.difficulty {
-    transform: translateX(500%);
+.difficulty, .settings {
+    transform: translateX(200%);
 }
 
-.settings {
-    transform: translateX(500%);
-}
 
 .mainmenu, .settings, .difficulty {
     background: linear-gradient(0deg, rgba(42,155,157,1) 0%, rgba(41,166,212,1) 46%, rgba(54,119,209,1) 100%);
     border-radius: 10px;
     width: 100%;
     position: absolute;
-    transition: transform 1s;
+    transition: transform 0.67s;
 }
 
+/* Buttons for returning || fullscreening || pausing || opening shop */
+/* 
+    Start menu buttons
+*/
+
+/* Return button */
 .options-return {
     position: absolute;
     left: 0;
-    top: -10px;
     cursor: pointer;
     z-index: 5;
-    margin: 5px 0 0 10px;
+    display:flex;
+    padding: 10px;
+    align-items: center;
+    justify-content: center;
 }
 
 .options-return:before {
     position: relative;
     /* Offset height to match text height */
-    top: 7px;
-    content:url('arrow.svg');
-    max-height: 10px;
-    max-width: 10px;
+    content: url('./images/arrow.svg');
 }
 
 .options-return:hover{
     opacity: 0.7;
+    transform:scale(1.05);
 }
 
+
+/* Fullscreen button */
+
+.options-fullscreen {
+    position: absolute;
+    right: 0;
+    cursor: pointer;
+    z-index: 5;
+    display:flex;
+    padding: 10px;
+    align-items: center;
+    justify-content: center;
+}
+
+.options-fullscreen:before {
+    content: url('./images/enlarge1.svg');
+    
+}
+
+.options-fullscreen:hover {
+    transform:scale(1.05);
+    opacity: 0.7;
+}
+
+
+/* ----------------------------
+        End menu buttons
+*-------------------------------/
+
+
+/* 
+    Menu items and sidemenu
+*/
 .options__menu, .options__menu-sidemenu {
     text-align: center;
     width: 100%;
@@ -109,9 +183,17 @@ body {
     opacity: 0.65;
 }
 
+.options__menu-item:last-child {
+    margin-bottom: 10px;
+}
+
 .options__menu-sidemenu {
     position: relative;
     left: 0%;
+}
+
+.fullscreen__menu {
+    height: 100%;
 }
 
 .container {
@@ -126,7 +208,6 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 10px 0;
 }
 
 @media screen and (max-width: 1280px) {
@@ -146,5 +227,3 @@ body {
         width: auto;
     }
 }
-
-/* `Changes to height*/

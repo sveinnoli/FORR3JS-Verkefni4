@@ -14,9 +14,11 @@ function handleResize() {
     canvas.height = parseFloat(window.innerHeight - parseFloat(computedStyle.borderBottom)*2);
 }
 
+// handleResize();
+
+
 // Set height and width on page load or resize
-window.addEventListener("resize", handleResize);
-window.addEventListener("DOMContentLoaded", handleResize);
+// window.addEventListener("resize", handleResize);
 
 
 

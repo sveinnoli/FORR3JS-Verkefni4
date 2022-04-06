@@ -1,7 +1,8 @@
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 import { uiElements } from "./uiElements.js";
-import { Asteroid, Ship } from "./object.js"
+import { Asteroid, Ship } from "./objects.js"
+
 export class Game {
     constructor(canvas) {
         this.canvas = canvas;
@@ -11,15 +12,21 @@ export class Game {
     }
 
     __setupGamestate() {
-        // Need to add a mutation observer
+        // Watches for changes in the gamestate element
         var observer = new MutationObserver(function(mutations) {
             mutations.forEach(function(mutation) {
               if (mutation.type == "attributes") {
-                console.log("attributes changed")
+                    let newState = this.gameState.getAttribute('gamestate');
+                    if (newState === "playing") {
+                        
+                    } else {
+                        // Pause the game loop 
+                        window.cancelAnimationFrame(this.start.bind(this));
+                    }
               }
-            });
-          });
-        observer.observe(this.gameState, { attributes: true, childList: true, subtree: true });
+            }.bind(this));
+          }.bind(this));
+        observer.observe(this.gameState, { attributes: true});
     }
 
     __changeGamestate(newState) {
@@ -34,9 +41,8 @@ export class Game {
         this.config = config;
     }
 
-    loop(config) {
+    start() {
         // Here we keep going 
-        this.setup_config(config);
         this.initGame();
         this.__changeGamestate('playing');
         if (1 == 2) {
@@ -44,7 +50,7 @@ export class Game {
             // If so we request another frame otherwise we do not and end the game.
             // we would have to do that with the ship object as when the player dies off 
             // the game would end
-            window.requestAnimationFrame(this.loop.bind(this));
+            window.requestAnimationFrame(this.start.bind(this));
         }
         return false;
         
