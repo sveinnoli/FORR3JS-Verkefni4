@@ -9,6 +9,7 @@ export class Game {
         this.asteroids = [];
         this.canvas = canvas;
         this.config;
+        this.currentAnimationFrameID;
         this.gameState = uiElements.gameState;
 
         this.__setupGamestate();
@@ -43,9 +44,10 @@ export class Game {
 
     __pause_game() {
         this.__changeGamestate("paused");
-        window.cancelAnimationFrame(this.loop.bind(this));
+        window.cancelAnimationFrame(this.currentAnimationFrameID);
         // Also need to reposition all elements accordingly and bring up the pause menu
     }
+
     handleResize() {
         if (this.gameState.getAttribute("gamestate") === "playing") {
             this.__pause_game()
@@ -64,13 +66,10 @@ export class Game {
         this.gameState.setAttribute('gamestate', newState)
     }
 
-    initGame() {
+    initGame(config) {
         // Configure game from config and difficulty level
-    }   
-
-    setup_config(config) {
         this.config = config;
-    }
+    }   
 
     start() {
         // Here we initialize all of our stuff
@@ -89,6 +88,6 @@ export class Game {
             asteroid.move();
             asteroid.collision();
         })
-        window.requestAnimationFrame(this.loop.bind(this));
+        this.currentAnimationFrameID = window.requestAnimationFrame(this.loop.bind(this));
     }
 }

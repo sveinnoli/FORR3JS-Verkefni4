@@ -90,7 +90,7 @@ export class UserInterface {
                 this.__switch_menu(option);
             } else if (option === "start") {
                 this.__hide_menu("mainmenu");
-                this.gameInstance.setup_config(this.config);
+                this.gameInstance.initGame();
                 this.gameInstance.start();       
             } 
         });
