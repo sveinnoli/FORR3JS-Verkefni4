@@ -17,6 +17,7 @@ export class Game {
         this.__setup_event_handlers();
         this.handleResize(); // Call once on startup to adjust screen
         this.generateAsteroids();
+        this.generateShips();
     }
 
     generateAsteroids() {
@@ -61,8 +62,9 @@ export class Game {
             // Detected change in window size while playing send pause to gameState
             this.__changeGamestate("paused");
         }
+        document.querySelector(".canvas-container");
         canvas.width = window.innerWidth;
-        canvas.height = window.innerWidth / 2.031;
+        canvas.height = window.innerWidth / 1.778+20;
     }
 
     __setup_event_handlers() {
@@ -75,6 +77,7 @@ export class Game {
 
     initGame(config) {
         // Configure game from config and difficulty level
+        // also need to load gameState
         this.config = config;
     }   
 
@@ -82,6 +85,14 @@ export class Game {
         // Here we initialize all of our stuff
         this.__changeGamestate('playing');
         this.loop();
+    }
+
+    restart() {
+        // Once the game is up and running can use this to clear all game variables
+    }
+
+    reset() {
+
     }
 
     clearScreen() {
@@ -95,6 +106,9 @@ export class Game {
             asteroid.move();
             asteroid.collision();
         })
+
+        this.ship.render();
+        this.ship.update();
         this.currentAnimationFrameID = window.requestAnimationFrame(this.loop.bind(this));
     }
 }

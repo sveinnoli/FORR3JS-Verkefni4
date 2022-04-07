@@ -9,6 +9,10 @@ class GameObject {
     }
 }
 
+
+/*
+    AI
+*/
 export class Saucer extends GameObject {
     constructor(x, y, xv, yv) {
         super(x, y, xv, yv);
@@ -17,6 +21,9 @@ export class Saucer extends GameObject {
 }
 
 
+/*
+    AI
+*/
 export class Asteroid extends GameObject {
     constructor(x, y, xv, yv) {
         super(x, y, xv, yv);
@@ -54,18 +61,78 @@ export class Asteroid extends GameObject {
     }
 };
 
+
+/*
+    Player
+*/
 export class Ship extends GameObject {
     constructor(xv, yv) {
         super(canvas.width/2, canvas.height/2, xv, yv);
         this.xv = xv;
         this.yv = yv;
+        this.setupKeys();
+        this.keys = {}
 
     }
 
+    setupKeys() {
+        window.addEventListener('keydown', (e) => {
+            this.keys[e.key.toLocaleLowerCase()] = true;
+        });
+
+        window.addEventListener('keyup', (e) => {
+            this.keys[e.key.toLowerCase()] = false;
+        })
+    }
+
+    update() {
+        if (this.keys["w"]) { 
+            if (this.y - this.yv > 0) {
+                this.y -= this.yv;
+            } else {
+                this.y = 0;
+            }
+        }
+        
+        if (this.keys["a"]) {
+            if (this.x - this.xv > 0) {
+                this.x -= this.xv;
+            } else {
+                this.x = 0;
+            }
+        }
+        
+        if (this.keys["s"]) {
+            if (this.y + this.yv+25 < canvas.height) {
+                this.y += this.yv;
+            } else {
+                this.y = canvas.height-25;
+            }
+        }
+        
+        if (this.keys["d"]) {
+            if (this.x + this.xv+25 < canvas.width) {
+                this.x += this.xv;
+            } else {
+                this.x = canvas.width-25;
+            }
+        }
+
+        if (this.keys["e"]) {
+            this.rotation = (this.rotation % 1) - 0.01;
+        } else if (this.keys["q"]) {
+            this.rotation = (this.rotation % 1) + 0.01;
+        } 
+    }
+
+
     render() {
         ctx.beginPath();
-        ctx.fillStyle = "red";
-        ctx.arc(this.x, this.y, 25, 0, 2 * Math.PI);
+        ctx.fillStyle = "blue";
+        ctx.arc(this.x, this.y, 25, 0, Math.PI*2);
+        ctx.fillRect(this.x, this.y, 25, 25)
         ctx.fill();
+        
+
     }
 };

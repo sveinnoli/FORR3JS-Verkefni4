@@ -24,6 +24,10 @@ export class UserInterface {
             document.exitFullscreen();
         }
     }
+
+    __changeGamestate(newState) {
+        this.gameState.setAttribute('gamestate', newState)
+    }
     
     __menu_return() {
         this.menuElements.currMenu.style.transform = "translateX(500%)";
@@ -87,6 +91,7 @@ export class UserInterface {
         const optionsMenu = document.querySelector(".options__menu");
         const settingsMenu = document.querySelector(".settings .options__menu-sidemenu");
         const difficultyMenu = document.querySelector(".difficulty .options__menu-sidemenu")
+        const pauseMenu = document.querySelector('.paused .options__menu-sidemenu');
         this.menuElements.return.addEventListener('click', this.__menu_return.bind(this));
 
         optionsMenu.addEventListener('click', (e) => {
@@ -111,7 +116,18 @@ export class UserInterface {
             // Can add color to the currently selected option
         }) 
 
-        // Will probably need a seperate event listener for pause menu as it will have different options from the start menu 
+        // Pause menu
+        pauseMenu.addEventListener('click', (e) => {
+            let menuOption = e.target.getAttribute('data-option');
+
+            if (menuOption === "resume") {
+                this.__changeGamestate(menuOption);
+            } else if (menuOption === "restart") {
+                this.gameInstance.restart();
+            } else if (menuOption === "quit") {
+
+            }
+        })
         
         // Fullscreen
         this.menuElements.fullscreen.addEventListener('click', this.__toggle_full_screen.bind(this));

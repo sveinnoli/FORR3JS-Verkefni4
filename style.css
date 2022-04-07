@@ -40,25 +40,26 @@ body {
     align-items: center;
 }
 
-#canvas {
+.canvas-container {
     object-fit: contain;
+    position: relative;
     background: grey;
-    border: 10px solid white;
     max-height: 100%;
     width: 100%;
     max-width: 100%;
+    border: 10px solid rgb(154, 79, 79);
 }
-
 
 #canvas {
-    border: 10px solid black;
-
+    display: block;
+    width: 100%;
 }
+
 
 .options-overlay {
     height: 100vh;
     width: 100vw;
-    background: black;
+    background: rgba(0, 0, 0, 0.6);
 }
 
 /* Options menu items */
@@ -88,8 +89,9 @@ body {
     transform: translateX(200%);
 }
 
-.options__menu-item[data-option='resume']:before {
+.options__menu-item[data-option='resume']:after {
     content: url("./images/playButton.svg");
+    padding-left: 10px;
 }
 
 

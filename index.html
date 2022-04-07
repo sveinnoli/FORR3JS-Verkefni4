@@ -36,13 +36,13 @@
                 <div class="options-skeleton difficulty">
                     <h2 class="menu-title">Difficulty</h2>
                     <div class="options__menu-sidemenu">
-                        <div class="options__menu-item" data-option="easy">Easy</div>
-                        <div class="options__menu-item" data-option="medium">Medium</div>
                         <div class="options__menu-item" data-option="hard">Hard</div>
+                        <div class="options__menu-item" data-option="medium">Medium</div>
+                        <div class="options__menu-item" data-option="easy">Easy</div>
                     </div>
                 </div>
                 <div class="options-skeleton paused">
-                    <h2 class="menu-title">Paused</h2>
+                    <h2 class="menu-title">Pause menu</h2>
                     <div class="options__menu-sidemenu">
                         <div class="options__menu-item" data-option="resume">Resume</div>
                         <div class="options__menu-item" data-option="restart">Restart</div>
@@ -53,9 +53,10 @@
         </div>
     </div>
 
-    
     <div class="fullscreen">
-        <canvas id="canvas">abcdef</canvas>
+        <div class="canvas-container">
+            <canvas id="canvas"></canvas>
+        </div>
     </div>
 <script type="module" src="scripts/main.js" async></script>
 <!-- This element is used to indicate gamestate options are <( mainmenu || paused || playing || resume || shop )> -->
