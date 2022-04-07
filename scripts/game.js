@@ -43,6 +43,7 @@ export class Game {
 
     __pause_game() {
         this.__changeGamestate("paused");
+        window.cancelAnimationFrame(this.loop.bind(this));
         // Also need to reposition all elements accordingly and bring up the pause menu
     }
     handleResize() {
