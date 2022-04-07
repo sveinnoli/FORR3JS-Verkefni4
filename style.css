@@ -84,12 +84,16 @@ body {
     
 }
 
-.difficulty, .settings {
+.difficulty, .settings, .paused {
     transform: translateX(200%);
 }
 
+.options__menu-item[data-option='resume']:before {
+    content: url("./images/playButton.svg");
+}
 
-.mainmenu, .settings, .difficulty {
+
+.mainmenu, .settings, .difficulty, .paused {
     background: linear-gradient(0deg, rgba(42,155,157,1) 0%, rgba(41,166,212,1) 46%, rgba(54,119,209,1) 100%);
     border-radius: 10px;
     width: 100%;

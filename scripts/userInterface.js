@@ -11,13 +11,10 @@ export class UserInterface {
         this.menuElements = uiElements.menuElements;
         this.gameState = uiElements.gameState;
         this.__setup_eventListeners();
-        this.__setup_gamestate_change();
+        this.__setup_gamestate_handler();
     }
     
-
-
-    // Switches back to previous menu if return is pressed
-    
+    // Switches back to previous menu if return is pressed    
     __toggle_full_screen() {
         if (!document.fullscreenElement) {
             document.body.requestFullscreen().catch(err => {
@@ -61,15 +58,23 @@ export class UserInterface {
 
     }
 
-    __setup_gamestate_change() {
+    __setup_gamestate_handler() {
         // Listen for changes to gamestate attributes
         var observer = new MutationObserver(function(mutations) {
             mutations.forEach(function(mutation) {
               if (mutation.type === "attributes") {
                     let newState = this.gameState.getAttribute('gamestate');
-                    if (newState === "mainmenu" || newState === "pause") {
-                        this.__show_menu(newState);
-                    } 
+                    if ((newState === "mainmenu" || newState === "paused") && this.menuElements.currMenu !== this.menuElements[newState]) {
+                        this.__switch_menu(newState);
+                        this.__show_menu("overlay");
+                    }  else if (newState === "resume") {
+                        this.__switch_menu(newState);
+                        this.__hide_menu('overlay');
+                    } else if (newState === "shop") {
+                        //! Still has no element in uiElements
+                        this.__switch_menu(newState);
+                        this.__show_menu('overlay');
+                    }
               }
             }.bind(this));
           }.bind(this));
@@ -89,7 +94,7 @@ export class UserInterface {
             if ((option === "difficulty" || option === "settings") && this.menuElements[option] !== this.menuElements["currMenu"]) {
                 this.__switch_menu(option);
             } else if (option === "start") {
-                this.__hide_menu("mainmenu");
+                this.__hide_menu("overlay");
                 this.gameInstance.initGame();
                 this.gameInstance.start();       
             } 
@@ -113,11 +118,13 @@ export class UserInterface {
     }
 
     __hide_menu(menu) {
-        this.menuElements.overlay.hidden = true;
+        // Showing Menu
+        this.menuElements[menu].hidden = true;
     }
     
     __show_menu(menu) {
-        this.menuElements.overlay.hidden = false;
+        // Showing Menu
+        this.menuElements[menu].hidden = false;
     }
 
 }

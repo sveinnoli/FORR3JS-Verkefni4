@@ -7,14 +7,15 @@ import { Asteroid, Ship } from "./objects.js"
 export class Game {
     constructor(canvas) {
         this.asteroids = [];
+        this.ship;
         this.canvas = canvas;
         this.config;
         this.currentAnimationFrameID;
         this.gameState = uiElements.gameState;
 
-        this.__setupGamestate();
+        this.__setup_gamestate_handler();
         this.__setup_event_handlers();
-        //
+        this.handleResize(); // Call once on startup to adjust screen
         this.generateAsteroids();
     }
 
@@ -24,17 +25,20 @@ export class Game {
         }
     }
 
-    __setupGamestate() {
-        // Watches for changes in the gamestate element
+    generateShips() {
+        this.ship = new Ship(2, 2);
+    }
+
+    __setup_gamestate_handler() {
+        // MutationObserver handles all the changes in the gameState element
         var observer = new MutationObserver(function(mutations) {
             mutations.forEach(function(mutation) {
               if (mutation.type == "attributes") {
                     let newState = this.gameState.getAttribute('gamestate');
-                    if (newState === "playing") {
-                        // Resume the game loop
-                    } else {
-                        // Pause the game loop 
-                        window.cancelAnimationFrame(this.start.bind(this));
+                    if (newState === "resume") {
+                        this.__resume_game();
+                    } else if (newState === "paused") {
+                        this.__pause_game();                        
                     }
               }
             }.bind(this));
@@ -42,17 +46,21 @@ export class Game {
         observer.observe(this.gameState, { attributes: true});
     }
 
+    // Used to resume the game from the pause menu
     __pause_game() {
-        this.__changeGamestate("paused");
         window.cancelAnimationFrame(this.currentAnimationFrameID);
-        // Also need to reposition all elements accordingly and bring up the pause menu
+    }
+    
+    __resume_game() {
+        window.requestAnimationFrame(this.loop.bind(this));
     }
 
     handleResize() {
-        if (this.gameState.getAttribute("gamestate") === "playing") {
-            this.__pause_game()
+        let gameState = this.gameState.getAttribute("gamestate")
+        if (gameState === "playing" || gameState === "resume") {
+            // Detected change in window size while playing send pause to gameState
+            this.__changeGamestate("paused");
         }
-
         canvas.width = window.innerWidth;
         canvas.height = window.innerWidth / 2.031;
     }
@@ -60,7 +68,6 @@ export class Game {
     __setup_event_handlers() {
         window.addEventListener("resize", this.handleResize.bind(this));
     }
-
 
     __changeGamestate(newState) {
         this.gameState.setAttribute('gamestate', newState)

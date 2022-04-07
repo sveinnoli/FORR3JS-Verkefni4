@@ -41,6 +41,14 @@
                         <div class="options__menu-item" data-option="hard">Hard</div>
                     </div>
                 </div>
+                <div class="options-skeleton paused">
+                    <h2 class="menu-title">Paused</h2>
+                    <div class="options__menu-sidemenu">
+                        <div class="options__menu-item" data-option="resume">Resume</div>
+                        <div class="options__menu-item" data-option="restart">Restart</div>
+                        <div class="options__menu-item" data-option="quit">Quit</div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -50,7 +58,7 @@
         <canvas id="canvas">abcdef</canvas>
     </div>
 <script type="module" src="scripts/main.js" async></script>
-<!-- This element is used to indicate gamestate options are mainmenu || paused || playing) -->
+<!-- This element is used to indicate gamestate options are <( mainmenu || paused || playing || resume || shop )> -->
 <data name="game-state" hidden gamestate="mainmenu"></data>
 </body>
 </html>
