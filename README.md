@@ -14,3 +14,7 @@ Leikjagerð - Asteroid
 ### Main menu
 - Need to add a fullscreen button
 - Add a way to make the back menu recursive to allow for multiple menus
+
+
+### Game
+- On resize i need to pause the game and dynamically place all of the objects again in the new position

@@ -13,6 +13,8 @@ export class UserInterface {
         this.__setup_eventListeners();
         this.__setup_gamestate_change();
     }
+    
+
 
     // Switches back to previous menu if return is pressed
     
