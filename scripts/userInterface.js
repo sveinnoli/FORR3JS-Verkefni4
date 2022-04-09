@@ -48,7 +48,6 @@ export class UserInterface {
     }
     // Switches to either settings || difficulty menu 
     __switch_menu(menu) {
-        console.log(menu);
         this.menuElements.currMenu.style.transform = "translateX(500%)";
         this.menuElements.currMenu = this.menuElements[menu];
         this.menuElements.currMenu.style.transform = "translateX(0%)";

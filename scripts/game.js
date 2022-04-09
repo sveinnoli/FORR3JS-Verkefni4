@@ -12,6 +12,8 @@ export class Game {
         this.config;
         this.currentAnimationFrameID;
         this.gameState = uiElements.gameState;
+        
+        this.screenSize = {"width": undefined, "height": undefined} 
 
         this.__setup_gamestate_handler();
         this.__setup_event_handlers();
@@ -65,8 +67,47 @@ export class Game {
             // Detected change in window size while playing send pause to gameState
             this.__changeGamestate("pause");
         }
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerWidth / 1.778+40;
+        
+        let newWidth = window.innerWidth;
+        let newHeight = window.innerWidth / 1.778+40;
+
+        if (!(this.screenSize.width && this.screenSize.height)) {
+            // First time running
+            this.screenSize.width = newWidth;
+            this.screenSize.height = newHeight;
+        } else {
+            // 
+            this.__handle_dimension_change(newWidth, newHeight);
+        }
+
+        canvas.width = newWidth;
+        canvas.height = newHeight;
+
+        this.screenSize.width = newWidth;
+        this.screenSize.height = newHeight;
+    }
+
+    __handle_dimension_change(newWidth, newHeight) {
+        // TODO make it only calculate after x time has passed to avoid
+        // calculating hundreds of times per second
+        console.log("Readjusting...")
+        let widthRatio = newWidth/this.screenSize.width;
+        let heightRatio = newHeight/this.screenSize.height;
+        if(this.ship) {
+            // Recalculate xpos and ypos
+            this.ship.x *= widthRatio;
+            this.ship.y *= heightRatio;
+            console.log(`Screenwidth is : ${newWidth}`)
+            console.log(`Moving x by ${widthRatio}, old x: ${this.ship.x}, "new x: ${this.ship.x*widthRatio}`)
+        }
+
+        this.asteroids.map(asteroid => {
+            if (asteroid) {
+                // Recalculate xpos and ypos
+                asteroid.x *= widthRatio;
+                asteroid.y *= heightRatio;
+            }
+        })
     }
 
     __setup_event_handlers() {
