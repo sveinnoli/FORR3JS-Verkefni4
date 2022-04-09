@@ -127,6 +127,7 @@ body {
 .options-shop, .options-pause {
     padding: 3px 3px;
     margin: 0 0 0 5px;
+    border: var(--menu__border-width) solid black;
 }
 
 .options-shop:active, .options-pause:active {
@@ -140,6 +141,9 @@ body {
 /* Shop button */
 .options-shop {
     background-color: #9ca312a6;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 /* Pause button */

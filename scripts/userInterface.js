@@ -48,6 +48,7 @@ export class UserInterface {
     }
     // Switches to either settings || difficulty menu 
     __switch_menu(menu) {
+        console.log(menu);
         this.menuElements.currMenu.style.transform = "translateX(500%)";
         this.menuElements.currMenu = this.menuElements[menu];
         this.menuElements.currMenu.style.transform = "translateX(0%)";
@@ -67,16 +68,16 @@ export class UserInterface {
         // Listen for changes to gamestate attributes
         var observer = new MutationObserver(function(mutations) {
             mutations.forEach(function(mutation) {
-              if (mutation.type === "attributes") {
+              if (mutation.type.match(/attributes/)) {
                     let newState = this.gameState.getAttribute('gamestate');
-                    if ((newState === "mainmenu" || newState === "pause") && this.menuElements.currMenu !== this.menuElements[newState]) {
+                    if ((newState.match(/mainmenu|pause/)) && this.menuElements.currMenu !== this.menuElements[newState]) {
                         this.__switch_menu(newState);
                         this.__show_menu("overlay");
                         this.buttonElements.fullscreen.hidden = false;
-                    }  else if (newState === "resume") {
+                    }  else if (newState.match(/resume/)) {
                         this.__switch_menu(newState);
                         this.__hide_menu('overlay');
-                    } else if (newState === "shop") {
+                    } else if (newState.match(/shop/)) {
                         //! Still has no element in uiElements
                         this.__switch_menu(newState);
                         this.__show_menu('overlay');
@@ -103,12 +104,11 @@ export class UserInterface {
         const returnButton = this.buttonElements.return;
 
 
-
         optionsMenu.addEventListener('click', (e) => {
             let option = e.target.getAttribute("data-option");
-            if ((option === "difficulty" || option === "settings") && this.menuElements[option] !== this.menuElements["currMenu"]) {
+            if ((option.match(/difficulty|settings/)) && this.menuElements[option] !== this.menuElements["currMenu"]) {
                 this.__switch_menu(option);
-            } else if (option === "start") {
+            } else if (option.match(/start/)) {
                 this.__hide_menu("overlay");
                 this.gameInstance.initGame();
                 this.gameInstance.start();       
@@ -129,12 +129,15 @@ export class UserInterface {
         // Pause menu
         pauseMenu.addEventListener('click', (e) => {
             let menuOption = e.target.getAttribute('data-option');
-            if (menuOption === "resume") {
+            if (menuOption.match(/resume/)) {
                 this.__changeGamestate(menuOption);
-            } else if (menuOption === "restart") {
+            } else if (menuOption.match(/restart/)) {
                 this.gameInstance.restart();
-            } else if (menuOption === "quit") {
-                this.gameInstance.quit();
+                this.__switch_menu('mainmenu');
+                this.__hide_menu("overlay");
+                // this.menuElements.overlay.hidden = true;
+            } else if (menuOption.match(/quit/)) {
+                this.__changeGamestate("mainmenu");
             }
         })
         

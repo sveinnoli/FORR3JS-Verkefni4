@@ -16,8 +16,6 @@ export class Game {
         this.__setup_gamestate_handler();
         this.__setup_event_handlers();
         this.handleResize(); // Call once on startup to adjust screen
-        this.generateAsteroids();
-        this.generateShips();
     }
 
     generateAsteroids() {
@@ -40,6 +38,8 @@ export class Game {
                         this.__resume_game();
                     } else if (newState.match(/pause|shop/)) {
                         this.__pause_game();                        
+                    } else if (newState.match(/mainmenu/)) {
+                        this.quit();
                     }
               }
             }.bind(this));
@@ -61,7 +61,7 @@ export class Game {
     */
     handleResize() {
         let gameState = this.gameState.getAttribute("gamestate")
-        if (gameState.match(/playing | resume/)) {
+        if (gameState.match(/playing|resume/)) {
             // Detected change in window size while playing send pause to gameState
             this.__changeGamestate("pause");
         }
@@ -84,28 +84,27 @@ export class Game {
     }   
 
     resetGame() {
-        // reset all game variables
+        window.cancelAnimationFrame(this.currentAnimationFrameID);
+        this.ship = undefined;
+        this.asteroids = [];
     }
 
     start() {
         // Here we initialize all of our stuff
+        this.generateAsteroids();
+        this.generateShips();
         this.__changeGamestate('playing');
         this.loop();
     }
 
     restart() {
-        // Once the game is up and running can use this to clear all game variables
+        this.resetGame();
+        this.start();
     }
 
     quit() {
-        window.cancelAnimationFrame(this.currentAnimationFrameID);
-        delete this.ship;
-        delete this.asteroids;
+        this.resetGame();
         // Reset variables all variables here on game quit or make a function to do so
-    }
-
-    gameOver() {
-        // When play dies and game ends call this and reset everything
     }
 
     clearScreen() {
