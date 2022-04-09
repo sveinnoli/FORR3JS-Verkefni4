@@ -9,6 +9,7 @@ export class UserInterface {
             }
         }
         this.menuElements = uiElements.menuElements;
+        this.buttonElements = uiElements.buttons;
         this.gameState = uiElements.gameState;
         this.__setup_eventListeners();
         this.__setup_gamestate_handler();
@@ -31,33 +32,33 @@ export class UserInterface {
     
     __menu_return() {
         this.menuElements.currMenu.style.transform = "translateX(500%)";
-        this.menuElements.currMenu = this.menuElements.mainMenu;
+        this.menuElements.currMenu = this.menuElements.mainmenu;
         this.menuElements.currMenu.style.transform = "translateX(0%)";
         
         // Back arrow already visible, hide it instantly
-        this.menuElements.return.hidden = !this.menuElements.return.hidden;    
-        this.menuElements.fullscreen.hidden = true; 
+        this.buttonElements.return.hidden = true;    
+        this.buttonElements.fullscreen.hidden = true; 
 
 
         // Hides elements that are already visible until end of menu transition
         this.menuElements.currMenu.addEventListener('transitionend', () => {
-            this.menuElements.fullscreen.hidden = false; 
+            this.buttonElements.fullscreen.hidden = false; 
         })
 
     }
     // Switches to either settings || difficulty menu 
     __switch_menu(menu) {
-        this.menuElements.currMenu.style.transform = "translateX(-500%)";
+        this.menuElements.currMenu.style.transform = "translateX(500%)";
         this.menuElements.currMenu = this.menuElements[menu];
         this.menuElements.currMenu.style.transform = "translateX(0%)";
 
         // fullscreen button
-        this.menuElements.fullscreen.hidden = true; 
+        this.buttonElements.fullscreen.hidden = true; 
 
         // Makes element appear that are hidden on transitionend
         this.menuElements.currMenu.addEventListener('transitionend', () => {
-            this.menuElements.return.hidden = !this.menuElements.return.hidden;   
-            this.menuElements.fullscreen.hidden = false; 
+            this.buttonElements.return.hidden = !this.buttonElements.return.hidden;   
+            this.buttonElements.fullscreen.hidden = false; 
         }, {once:true})
 
     }
@@ -68,9 +69,10 @@ export class UserInterface {
             mutations.forEach(function(mutation) {
               if (mutation.type === "attributes") {
                     let newState = this.gameState.getAttribute('gamestate');
-                    if ((newState === "mainmenu" || newState === "paused") && this.menuElements.currMenu !== this.menuElements[newState]) {
+                    if ((newState === "mainmenu" || newState === "pause") && this.menuElements.currMenu !== this.menuElements[newState]) {
                         this.__switch_menu(newState);
                         this.__show_menu("overlay");
+                        this.buttonElements.fullscreen.hidden = false;
                     }  else if (newState === "resume") {
                         this.__switch_menu(newState);
                         this.__hide_menu('overlay');
@@ -91,8 +93,16 @@ export class UserInterface {
         const optionsMenu = document.querySelector(".options__menu");
         const settingsMenu = document.querySelector(".settings .options__menu-sidemenu");
         const difficultyMenu = document.querySelector(".difficulty .options__menu-sidemenu")
-        const pauseMenu = document.querySelector('.paused .options__menu-sidemenu');
-        this.menuElements.return.addEventListener('click', this.__menu_return.bind(this));
+        const pauseMenu = document.querySelector('.pause .options__menu-sidemenu');
+        
+        // Button elements
+        const pauseButton = this.buttonElements.pause;
+        const shopButton = this.buttonElements.shop;
+        const fullScreenButton = this.buttonElements.fullscreen;
+        const exitButton = this.buttonElements.exit;
+        const returnButton = this.buttonElements.return;
+
+
 
         optionsMenu.addEventListener('click', (e) => {
             let option = e.target.getAttribute("data-option");
@@ -119,18 +129,45 @@ export class UserInterface {
         // Pause menu
         pauseMenu.addEventListener('click', (e) => {
             let menuOption = e.target.getAttribute('data-option');
-
             if (menuOption === "resume") {
                 this.__changeGamestate(menuOption);
             } else if (menuOption === "restart") {
                 this.gameInstance.restart();
             } else if (menuOption === "quit") {
-
+                this.gameInstance.quit();
             }
         })
         
+        /* --------------------------- 
+               START OF BUTTONS
+         --------------------------- */ 
+
+        // Pause button
+        pauseButton.addEventListener('click', () => {
+            this.__changeGamestate('pause');
+        })
+
+        // Shop button 
+        shopButton.addEventListener('click', () => {
+            this.__changeGamestate('shop');
+            this.buttonElements.exit.hidden = false;
+        })
+
+        // Menu return button
+        returnButton.addEventListener('click', () => {
+            this.__menu_return();
+        });
+
+        // Exit button
+        exitButton.addEventListener('click', () => {
+            this.buttonElements.exit.hidden = true;
+            this.__changeGamestate("resume");
+        });
+        
         // Fullscreen
-        this.menuElements.fullscreen.addEventListener('click', this.__toggle_full_screen.bind(this));
+        fullScreenButton.addEventListener('click', () => {
+            this.__toggle_full_screen();
+        });
     }
 
     __hide_menu(menu) {

@@ -34,11 +34,11 @@ export class Game {
         // MutationObserver handles all the changes in the gameState element
         var observer = new MutationObserver(function(mutations) {
             mutations.forEach(function(mutation) {
-              if (mutation.type == "attributes") {
+              if (mutation.type.match(/attributes/)) {
                     let newState = this.gameState.getAttribute('gamestate');
-                    if (newState === "resume") {
+                    if (newState.match(/resume/)) {
                         this.__resume_game();
-                    } else if (newState === "paused") {
+                    } else if (newState.match(/pause|shop/)) {
                         this.__pause_game();                        
                     }
               }
@@ -56,15 +56,17 @@ export class Game {
         window.requestAnimationFrame(this.loop.bind(this));
     }
 
+    /* 
+        Here i may wish to move resize handling over to the UserInterface class
+    */
     handleResize() {
         let gameState = this.gameState.getAttribute("gamestate")
-        if (gameState === "playing" || gameState === "resume") {
+        if (gameState.match(/playing | resume/)) {
             // Detected change in window size while playing send pause to gameState
-            this.__changeGamestate("paused");
+            this.__changeGamestate("pause");
         }
-        document.querySelector(".canvas-container");
         canvas.width = window.innerWidth;
-        canvas.height = window.innerWidth / 1.778+20;
+        canvas.height = window.innerWidth / 1.778+40;
     }
 
     __setup_event_handlers() {
@@ -81,6 +83,10 @@ export class Game {
         this.config = config;
     }   
 
+    resetGame() {
+        // reset all game variables
+    }
+
     start() {
         // Here we initialize all of our stuff
         this.__changeGamestate('playing');
@@ -91,8 +97,15 @@ export class Game {
         // Once the game is up and running can use this to clear all game variables
     }
 
-    reset() {
+    quit() {
+        window.cancelAnimationFrame(this.currentAnimationFrameID);
+        delete this.ship;
+        delete this.asteroids;
+        // Reset variables all variables here on game quit or make a function to do so
+    }
 
+    gameOver() {
+        // When play dies and game ends call this and reset everything
     }
 
     clearScreen() {
@@ -107,7 +120,9 @@ export class Game {
             asteroid.collision();
         })
 
-        this.ship.render();
+        // this.ship.render();
+        // this.ship.renderTriangle();
+        this.ship.renderShip();
         this.ship.update();
         this.currentAnimationFrameID = window.requestAnimationFrame(this.loop.bind(this));
     }

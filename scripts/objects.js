@@ -7,6 +7,29 @@ class GameObject {
         this.xv = xv;
         this.yv = yv;
     }
+
+    dXFromAngleAndHypot(angle, hypot) {
+        return hypot * Math.cos(this.toRad(angle));
+    }
+    dYFromAngleAndHypot(angle, hypot) {
+        return hypot * Math.sin(this.toRad(angle));
+    }
+
+    _getTipPos() {
+        return {
+            x: this.x + this.dXFromAngleAndHypot(this.rotation, 50 / 2),
+            y: this.y + this.dYFromAngleAndHypot(this.rotation, 50 / 2)
+        };
+    }
+
+    toRad(deg) {
+        return deg*(Math.PI/180);
+    }
+}
+
+
+class Bullet extends GameObject {
+
 }
 
 
@@ -36,8 +59,11 @@ export class Asteroid extends GameObject {
     render() {
         ctx.beginPath();
         ctx.arc(this.x, this.y, 25, 0, 2 * Math.PI);
-        ctx.fillStyle = "red";
+        ctx.fillStyle = "#b32d2e";
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = '#f86368';
         ctx.fill();
+        ctx.stroke();
     }
 
     move() {
@@ -72,7 +98,7 @@ export class Ship extends GameObject {
         this.yv = yv;
         this.setupKeys();
         this.keys = {}
-
+        this.rotation = 0;
     }
 
     setupKeys() {
@@ -87,52 +113,74 @@ export class Ship extends GameObject {
 
     update() {
         if (this.keys["w"]) { 
-            if (this.y - this.yv > 0) {
-                this.y -= this.yv;
-            } else {
-                this.y = 0;
-            }
+            this.x += this.dXFromAngleAndHypot(this.rotation, this.xv);
+            this.y += this.dYFromAngleAndHypot(this.rotation, this.yv);
+        }
+
+        if (this.keys["s"]) {
+            this.x -= this.dXFromAngleAndHypot(this.rotation, this.xv);
+            this.y -= this.dYFromAngleAndHypot(this.rotation, this.yv);
         }
         
         if (this.keys["a"]) {
-            if (this.x - this.xv > 0) {
-                this.x -= this.xv;
-            } else {
-                this.x = 0;
-            }
+            this.rotation = (this.rotation % 360) - 1.7;
         }
         
-        if (this.keys["s"]) {
-            if (this.y + this.yv+25 < canvas.height) {
-                this.y += this.yv;
-            } else {
-                this.y = canvas.height-25;
-            }
-        }
         
         if (this.keys["d"]) {
-            if (this.x + this.xv+25 < canvas.width) {
-                this.x += this.xv;
-            } else {
-                this.x = canvas.width-25;
-            }
-        }
-
-        if (this.keys["e"]) {
-            this.rotation = (this.rotation % 1) - 0.01;
-        } else if (this.keys["q"]) {
-            this.rotation = (this.rotation % 1) + 0.01;
+            this.rotation = (this.rotation % 360) + 1.7;
         } 
     }
 
+    renderTriangle() {
+        let rotRad = this.toRad(this.rotation);
+        ctx.beginPath();
+
+        // Go to origo of triangle
+        ctx.moveTo(this.x, this.y);
+        cosRad = Math.cos(rotRad);
+        sinRad = Math.sin(rotRad);
+        ctx.lineTo(this.x + (cosRad * 100) - sinRad * 100, this.y + (cosRad * 100) + sinRad * 100);
+
+        ctx.lineTo(this.x - (cosRad * 100) + sinRad * 100, this.y - (cosRad * 100) - sinRad * 100);
+        ctx.lineTo(this.x - (cosRad * 100) - sinRad * 100, this.y + (cosRad * 100) - sinRad * 100);
+
+        // end same at same point as started
+        ctx.lineTo(this.x + (cosRad * 100) - sinRad * 100, this.y + (cosRad * 100) + sinRad * 100);
+
+        // Color the triangle in
+        ctx.fillStyle = "rgb(172, 50, 50)";
+        ctx.fill();
+    }
 
     render() {
-        ctx.beginPath();
+        let rotRad = this.toRad(this.rotation);
+        ctx.save();
+        ctx.translate(this.x, this.y)
+        ctx.rotate(rotRad)
         ctx.fillStyle = "blue";
-        ctx.arc(this.x, this.y, 25, 0, Math.PI*2);
-        ctx.fillRect(this.x, this.y, 25, 25)
+        ctx.beginPath();
+        ctx.arc(0, 0, 25, 0, Math.PI*2);
+        ctx.fillRect(0, 0, 25, 25)
         ctx.fill();
-        
+        ctx.restore();
+    }
 
+    renderShip() {
+        let pos = this._getTipPos();
+        let x = pos.x;
+        let y = pos.y
+        ctx.beginPath();
+        let opposite = this.rotation <= 1 ? this.rotation + 180 : this.rotation - 180;
+        let startAngle = this.toRad(opposite - 22.5);
+        let endAngle = this.toRad(opposite + 22.5);
+        ctx.arc(x, y, 50, startAngle, endAngle);
+        ctx.lineTo(x, y);
+        ctx.closePath();
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = '#77ffff';
+        ctx.fillStyle = "#0a4b78";
+        ctx.fill();
+        ctx.stroke();
     }
 };

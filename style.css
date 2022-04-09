@@ -75,8 +75,6 @@ body {
 }
 
 
-
-/* This is used to order the menu lists */
 .options-menuscreen {
     position: relative;
     height: 100%;
@@ -85,7 +83,18 @@ body {
     
 }
 
-.difficulty, .settings, .paused {
+.options-skeleton {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+
+/* -------------------- 
+        MENUS 
+--------------------*/
+.difficulty, .settings, .pause, .shop {
     transform: translateX(200%);
 }
 
@@ -95,7 +104,7 @@ body {
 }
 
 
-.mainmenu, .settings, .difficulty, .paused {
+.mainmenu, .settings, .difficulty, .pause, .shop {
     background: linear-gradient(0deg, rgba(42,155,157,1) 0%, rgba(41,166,212,1) 46%, rgba(54,119,209,1) 100%);
     border-radius: 10px;
     width: 100%;
@@ -103,38 +112,48 @@ body {
     transition: transform 0.67s;
 }
 
-/* Buttons for returning || fullscreening || pausing || opening shop */
-/* 
-    Start menu buttons
-*/
+/* ------- Buttons for returning || fullscreening || pausing || opening shop --------*/
 
-/* Return button */
-.options-return {
-    position: absolute;
-    left: 0;
-    cursor: pointer;
-    z-index: 5;
+/* Options for ingame buttons */
+.game-options {
     display:flex;
-    padding: 10px;
-    align-items: center;
-    justify-content: center;
+    position: absolute;
+    align-content: flex-end;
+    justify-content: flex-end;
+    right: 0;
+    width: 30%;
 }
 
-.options-return:before {
-    position: relative;
-    /* Offset height to match text height */
-    content: url('./images/arrow.svg');
+.options-shop, .options-pause {
+    padding: 3px 3px;
+    margin: 0 0 0 5px;
 }
 
-.options-return:hover{
+.options-shop:active, .options-pause:active {
+    transform: scale(1.07);
+}
+
+.options-shop:hover, .options-pause:hover {
     opacity: 0.7;
-    transform:scale(1.05);
+}
+
+/* Shop button */
+.options-shop {
+    background-color: #9ca312a6;
+}
+
+/* Pause button */
+.options-pause {
+    background-color: #9ca312a6;
+}
+
+.options-pause img {
+    object-fit: cover;
 }
 
 
-/* Fullscreen button */
-
-.options-fullscreen {
+/* Setting up buttons */
+.options-fullscreen, .options-exit, .options-return {
     position: absolute;
     right: 0;
     cursor: pointer;
@@ -145,14 +164,31 @@ body {
     justify-content: center;
 }
 
+.options-fullscreen:hover, .options-return:hover, .options-exit:hover {
+    transform:scale(1.05);
+    opacity: 0.7;
+}
+
+/* return button */
+.options-return {
+    left: 0!important;
+    right: auto;
+}
+
+.options-return:before {
+    content: url("./images/arrow.svg");
+}
+
+/* Fullscreen button */
 .options-fullscreen:before {
     content: url('./images/enlarge1.svg');
     
 }
 
-.options-fullscreen:hover {
-    transform:scale(1.05);
-    opacity: 0.7;
+
+/* Exit menu button */
+.options-exit:before {
+    content: url('./images/Exit.svg');
 }
 
 
@@ -180,8 +216,7 @@ body {
     pointer-events: none;
 }
 
-/* Gives first menu item a border on the top */
-.options__menu-item {
+.options__menu-item:first-child {
     border-top: var(--menu__border-width) solid var(--menu__border-color);
 }
 
@@ -198,22 +233,11 @@ body {
     left: 0%;
 }
 
-.fullscreen__menu {
-    height: 100%;
-}
-
 .container {
     width: 50%;
     padding: 0 15px;
     margin: 0 auto;
     height: 100%;
-}
-
-.options-skeleton {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
 }
 
 @media screen and (max-width: 1280px) {

@@ -14,8 +14,12 @@
                 <h1>Asteroids</h1>
             </div>
             <div class="options-menuscreen">
+                <!-- Buttons for interacting with menu -->
                 <h3 class="options-return" hidden>Back</h3>
                 <div class="options-fullscreen"></div>
+                <div class="options-exit" hidden></div>
+
+                <!-- Main menu -->
                 <div class="options-skeleton mainmenu">
                     <h2 class="menu-title">Main menu</h2>
                     <!-- place some (butt)ons here -->
@@ -26,6 +30,7 @@
                     </div>
                     
                 </div>
+                <!-- Settings menu -->
                 <div class="options-skeleton settings">
                     <h2 class="menu-title">Settings</h2>
                     <div class="options__menu-sidemenu">
@@ -33,6 +38,7 @@
                         <div class="options__menu-item" data-option="normal">Normal mode</div>
                     </div>
                 </div>
+                <!-- Difficulty menu -->
                 <div class="options-skeleton difficulty">
                     <h2 class="menu-title">Difficulty</h2>
                     <div class="options__menu-sidemenu">
@@ -41,7 +47,8 @@
                         <div class="options__menu-item" data-option="easy">Easy</div>
                     </div>
                 </div>
-                <div class="options-skeleton paused">
+                <!-- Pause menu -->
+                <div class="options-skeleton pause">
                     <h2 class="menu-title">Pause menu</h2>
                     <div class="options__menu-sidemenu">
                         <div class="options__menu-item" data-option="resume">Resume</div>
@@ -49,12 +56,24 @@
                         <div class="options__menu-item" data-option="quit">Quit</div>
                     </div>
                 </div>
+                <!-- Shop menu  -->
+                <div class="options-skeleton shop">
+                    <h2 class="menu-title">Shop menu</h2>
+                    <div class="options__menu-sidemenu">
+                        <div class="options__menu-item" data-option="laser">Laser</div>
+                    </div>
+                </div>
+            </div>
             </div>
         </div>
     </div>
 
     <div class="fullscreen">
         <div class="canvas-container">
+            <div class="game-options">
+                <div class="options-shop" data-option="shop"><img src="./images/coin-gold-black.svg">Shop</div>
+                <div class="options-pause" data-option="pause"><img src="./images/pause.svg"></div>
+            </div>
             <canvas id="canvas"></canvas>
         </div>
     </div>
