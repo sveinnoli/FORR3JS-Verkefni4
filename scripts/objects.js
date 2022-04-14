@@ -72,7 +72,7 @@ export class Saucer extends GameObject {
     AI
 */
 export class Asteroid extends GameObject {
-    constructor(sides, x, y, xv, yv, size, rotation, stage=3) {
+    constructor(sides, x, y, xv, yv, size, rotation, stage=2) {
         super(x, y, xv, yv, size, rotation);
         this.sides = sides;
         this.deviation1 = Math.random()*1+0.5;
@@ -124,9 +124,11 @@ export class Ship extends GameObject {
         this.bullets = [];
     }
 
-    shoot() {
+    shoot(ratio) {
         let pos = this._getTipPos();
-        this.bullets.push(new Bullet(pos.x, pos.y, this.xv+10, this.yv+10, 5, this.rotation))
+        let size = 10*ratio;
+        console.log(size);
+        this.bullets.push(new Bullet(pos.x, pos.y, this.xv+10, this.yv+10, size, this.rotation))
     }
 
     moveForward() {
@@ -147,14 +149,34 @@ export class Ship extends GameObject {
         this.rotation = (this.rotation % 360) + 5;
     }
 
-    update() {
+    update(fps, maxAge) {
         if (this.bullets) {
             for (let i = 0; i < this.bullets.length; i++) {
                 this.bullets[i].render();
                 this.bullets[i].move();
+                this.bullets[i].age += 1/fps;
             }
+
+            this.bullets.filter((bullet) => {
+                bullet.age < maxAge;
+            } ) 
         }
     }
+
+    boundaryChecking() {
+        if (this.y < 0) {
+            this.y = canvas.height;
+        } else if (this.y > canvas.height) {
+            this.y = 0;
+        }
+
+        if (this.x < 0) {
+            this.x = canvas.width;
+        } else if (this.x > canvas.width) {
+            this.x = 0;
+        }
+    }
+
 
     renderShip() {
         let pos = this._getTipPos();

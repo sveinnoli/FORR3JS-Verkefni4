@@ -126,7 +126,7 @@ export class UserInterface {
         
         // Settings menu 
         settingsMenu.addEventListener('click', (e) => {
-            this.config.settings.mode = e.target.getAttribute('data-option');
+            this.config.mode = e.target.getAttribute('data-option');
         })
         
         // Difficulty menu

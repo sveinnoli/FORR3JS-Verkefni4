@@ -19,7 +19,8 @@ export class Game {
         this.currentAnimationFrameID;
         this.fps = 60; // Can scale it dynamically but browser runs at ~ 60 fps
         this.gameState = uiElements.gameState;        
-        this.screenSize = {"width": undefined, "height": undefined} 
+        this.screenSize = { "width": undefined, "height": undefined } 
+        this.screenRatio = canvas.height/window.innerHeight;
         
         // Timings
         this.oldTimestamp = 0;
@@ -49,12 +50,15 @@ export class Game {
         } 
 
         if (this.pressedKeys[" "]) {
-            if (this.timestamp - this.oldTimestamp > 250) {
-                this.ship.shoot();
+            if (this.timestamp - this.oldTimestamp > this.gameConfig.ship.fireRate) {
+                console.log(this.screenRatio);
+                this.ship.shoot(this.screenRatio);
                 this.oldTimestamp = this.timestamp;
             }
         }
     }
+
+ 
 
     updateScore() {
         // Here we update the score counter on the canvas
@@ -74,7 +78,7 @@ export class Game {
     generateAsteroids() {
         for (let i = 0; i < this.gameConfig.maxAsteroids; i++) {
             // Here we need to dynamically scale the velocities and size based on screensize
-            let size = Math.random()*15 + 15;
+            let size = Math.random()*12 + 25 * this.screenRatio;
             let x;
             let y;
 
@@ -99,13 +103,14 @@ export class Game {
                     yv,                             // YV
                     size,                           // Size
                     Math.random()*360,              // Rotation
-                    3                               // Stage
+                    2                               // Stage
                 ));
         }
     }
 
     generateShips() {
-        this.ship = new Ship(3, 3, 25, 45);
+        let size = 25 * canvas.height/window.innerHeight;
+        this.ship = new Ship(3, 3, size, 45);
     }
 
     __setup_gamestate_handler() {
@@ -121,6 +126,7 @@ export class Game {
                     } else if (newState.match(/mainmenu/)) {
                         this.quit();
                     } else if (newState.match(/defeat/)) {
+                        console.log(this.gameConfig, this.settings)
                         this.__pause_game();
                     } else if (newState.match(/victory/)) {
                         this.__pause_game();
@@ -144,6 +150,7 @@ export class Game {
         Here i may wish to move resize handling over to the UserInterface class
     */
     handleResize() {
+        this.screenRatio = canvas.height/window.innerHeight;
         // console.log(canvas.width/1920, canvas.height/1080);
         let gameState = this.gameState.getAttribute("gamestate")
         if (gameState.match(/playing|resume/)) {
@@ -170,14 +177,28 @@ export class Game {
     }
 
     __handle_dimension_change(newWidth, newHeight) {
+        console.log(this.screenRatio)
         // TODO make it only calculate after x time has passed to avoid
         // calculating hundreds of times per second
         let widthRatio = newWidth/this.screenSize.width;
         let heightRatio = newHeight/this.screenSize.height;
+        // Sets ship on new position according to the ratio of the old screensize and new screensize and resizes them
         if(this.ship) {
-            // Recalculate xpos and ypos
             this.ship.x *= widthRatio;
             this.ship.y *= heightRatio;
+            this.ship.size *= heightRatio;
+            this.ship.xv *= heightRatio;
+            this.ship.yv *= heightRatio;
+            if (this.ship.bullets) {
+                for (let i = 0; i < this.ship.bullets.length; i++) {
+                    let bullet = this.ship.bullets[i];
+                    bullet.x *= heightRatio;
+                    bullet.y *= heightRatio;
+                    bullet.xv *= heightRatio;
+                    bullet.yv *= heightRatio;
+                    bullet.size *= heightRatio;
+                }
+            }
         }
         
         this.asteroids.map(asteroid => {
@@ -185,6 +206,9 @@ export class Game {
                 // Recalculate xpos and ypos
                 asteroid.x *= widthRatio;
                 asteroid.y *= heightRatio;
+                asteroid.size *= heightRatio;
+                asteroid.xv *= heightRatio;
+                asteroid.yv *= heightRatio;
             }
         })
     }
@@ -205,8 +229,10 @@ export class Game {
                     if (this.asteroids[j].stage > 0) {
                         for (let k = 0; k < this.gameConfig.asteroid.splitBy; k++) {
                             let randAng = Math.random()*360;
-                            let xv = this.helper.dXFromAngleAndHypot(randAng, this.asteroids[j].xv*1.1);
-                            let yv = this.helper.dYFromAngleAndHypot(randAng, this.asteroids[j].xv*1.1);
+                            let xv = this.helper.dXFromAngleAndHypot(randAng, this.asteroids[j].xv*1.1+0.2);
+                            let yv = this.helper.dYFromAngleAndHypot(randAng, this.asteroids[j].xv*1.1+0.2);
+                            xv = Math.cos(randAng)*this.asteroids[j].xv*1.1;
+                            yv = Math.sin(randAng)*this.asteroids[j].yv*1.1;
                             tempAsteroids.push(new Asteroid(
                                 Math.round(Math.random()*2+6),                                                            // Sides
                                 this.asteroids[j].x + this.helper.dXFromAngleAndHypot(randAng, this.asteroids[j].size),   // X          // X
@@ -220,7 +246,7 @@ export class Game {
                         }
                     } else {
                         if (this.asteroids.length === 0) {
-                            this.__changeGamestate("victory");
+                            // Dosen't work as the asteroid gets removed in the end :(
                         }
                     }
                     // Mark asteroid and bullet for removal
@@ -238,7 +264,11 @@ export class Game {
             }
         }
         this.asteroids = this.asteroids.filter(asteroid => asteroid.size > 0);
+        if (this.asteroids.length === 0) {
+            this.__changeGamestate("victory");
+        }
         this.ship.bullets = this.ship.bullets.filter(bullet => bullet.age < this.gameConfig.bullet.maxAge);
+
 
         // Add the new asteroids onto the field 
         if (tempAsteroids[0]) {
@@ -259,6 +289,9 @@ export class Game {
     initGame(settings) {
         this.settings = settings;
         this.gameConfig = GAMECONFIG[settings.difficulty];
+        if (settings.mode === "cheat") {
+            this.gameConfig.ship.fireRate = 1;
+        }
         this.start();
     }   
 
@@ -287,15 +320,6 @@ export class Game {
         // Reset variables all variables here on game quit or make a function to do so
     }
 
-    victory() {
-        // Player won show victory screen
-    }
-
-    defeat() {
-        // Player lost show defeat screen
-        this.__pause_game();
-    }
-
     clearScreen() {
         ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
     }
@@ -313,8 +337,9 @@ export class Game {
             this.asteroids[i].render();
         }
 
-        this.ship.update();
+        this.ship.update(this.fps, this.gameConfig.bullet.maxAge);
         this.ship.renderShip();
+        this.ship.boundaryChecking();
 
         this.detectCollision();
         this.currentAnimationFrameID = window.requestAnimationFrame(this.loop.bind(this));
