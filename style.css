@@ -74,7 +74,6 @@ body {
     font-size: 30px;
 }
 
-
 .options-menuscreen {
     position: relative;
     height: 100%;
@@ -90,11 +89,10 @@ body {
     justify-content: center;
 }
 
-
 /* -------------------- 
         MENUS 
 --------------------*/
-.difficulty, .settings, .pause, .shop {
+.difficulty, .settings, .pause, .shop, .victory, .defeat {
     transform: translateX(200%);
 }
 
@@ -103,8 +101,7 @@ body {
     padding-left: 10px;
 }
 
-
-.mainmenu, .settings, .difficulty, .pause, .shop {
+.mainmenu, .settings, .difficulty, .pause, .shop, .victory, .defeat {
     background: linear-gradient(0deg, rgba(42,155,157,1) 0%, rgba(41,166,212,1) 46%, rgba(54,119,209,1) 100%);
     border-radius: 10px;
     width: 100%;
@@ -155,7 +152,6 @@ body {
     object-fit: cover;
 }
 
-
 /* Setting up buttons */
 .options-fullscreen, .options-exit, .options-return {
     position: absolute;
@@ -189,7 +185,6 @@ body {
     
 }
 
-
 /* Exit menu button */
 .options-exit:before {
     content: url('./images/Exit.svg');
@@ -199,8 +194,6 @@ body {
 /* ----------------------------
         End menu buttons
 *-------------------------------/
-
-
 /* 
     Menu items and sidemenu
 */

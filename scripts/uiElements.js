@@ -7,7 +7,10 @@ export const uiElements = {
         "settings" : document.querySelector(".settings"),
         "difficulty" : document.querySelector(".difficulty"),
         "overlay" : document.querySelector(".options-overlay"),
-        "resume" : document.querySelector('.mainmenu')
+        "resume" : document.querySelector('.mainmenu'),
+        "victory" : document.querySelector(".victory"),
+        "defeat" : document.querySelector(".defeat")
+
     },
     buttons : {   
         "return" : document.querySelector(".options-return"), 

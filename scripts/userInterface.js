@@ -1,12 +1,10 @@
-import {uiElements} from "./uiElements.js"
+import { uiElements } from "./uiElements.js"
 export class UserInterface {
     constructor(gameInstance) {
         this.gameInstance = gameInstance;
         this.config = {
             "difficulty": "medium",
-            "settings": {
-                "mode" : "normal"
-            }
+            "mode" : "normal"
         }
         this.menuElements = uiElements.menuElements;
         this.buttonElements = uiElements.buttons;
@@ -31,11 +29,11 @@ export class UserInterface {
     }
     
     __menu_return() {
-        this.menuElements.currMenu.style.transform = "translateX(500%)";
+        this.menuElements.currMenu.style.transform = "translateX(200%)";
         this.menuElements.currMenu = this.menuElements.mainmenu;
         this.menuElements.currMenu.style.transform = "translateX(0%)";
         
-        // Back arrow already visible, hide it instantly
+        // Back arrow already visible, hide it 
         this.buttonElements.return.hidden = true;    
         this.buttonElements.fullscreen.hidden = true; 
 
@@ -48,7 +46,7 @@ export class UserInterface {
     }
     // Switches to either settings || difficulty menu 
     __switch_menu(menu) {
-        this.menuElements.currMenu.style.transform = "translateX(500%)";
+        this.menuElements.currMenu.style.transform = "translateX(200%)";
         this.menuElements.currMenu = this.menuElements[menu];
         this.menuElements.currMenu.style.transform = "translateX(0%)";
 
@@ -67,7 +65,7 @@ export class UserInterface {
         // Listen for changes to gamestate attributes
         var observer = new MutationObserver(function(mutations) {
             mutations.forEach(function(mutation) {
-              if (mutation.type.match(/attributes/)) {
+                if (mutation.type.match(/attributes/)) {
                     let newState = this.gameState.getAttribute('gamestate');
                     if ((newState.match(/mainmenu|pause/)) && this.menuElements.currMenu !== this.menuElements[newState]) {
                         this.__switch_menu(newState);
@@ -80,11 +78,22 @@ export class UserInterface {
                         //! Still has no element in uiElements
                         this.__switch_menu(newState);
                         this.__show_menu('overlay');
+                    } else if (newState.match(/victory|defeat/)) {
+                        this.__switch_menu(newState);
+                        this.__show_menu('overlay');
+                        this.set_score();
                     }
-              }
+                }
             }.bind(this));
           }.bind(this));
         observer.observe(this.gameState, { attributes: true});
+    }
+
+    set_score() {
+        document.querySelectorAll("[data-option='score']").forEach((i) => {
+            i.textContent = this.gameInstance.score;
+        }) 
+
     }
 
     
@@ -94,6 +103,8 @@ export class UserInterface {
         const settingsMenu = document.querySelector(".settings .options__menu-sidemenu");
         const difficultyMenu = document.querySelector(".difficulty .options__menu-sidemenu")
         const pauseMenu = document.querySelector('.pause .options__menu-sidemenu');
+        const victoryMenu = document.querySelector('.victory .options__menu-sidemenu');
+        const defeatMenu = document.querySelector('.defeat .options__menu-sidemenu');
         
         // Button elements
         const pauseButton = this.buttonElements.pause;
@@ -109,8 +120,7 @@ export class UserInterface {
                 this.__switch_menu(option);
             } else if (option.match(/start/)) {
                 this.__hide_menu("overlay");
-                this.gameInstance.initGame();
-                this.gameInstance.start();       
+                this.gameInstance.initGame(this.config);
             } 
         });
         
@@ -131,6 +141,30 @@ export class UserInterface {
             if (menuOption.match(/resume/)) {
                 this.__changeGamestate(menuOption);
             } else if (menuOption.match(/restart/)) {
+                this.gameInstance.restart();
+                this.__switch_menu('mainmenu');
+                this.__hide_menu("overlay");
+                // this.menuElements.overlay.hidden = true;
+            } else if (menuOption.match(/quit/)) {
+                this.__changeGamestate("mainmenu");
+            }
+        })
+
+        victoryMenu.addEventListener('click', (e) => {
+            let menuOption = e.target.getAttribute('data-option');
+            if (menuOption.match(/restart/)) {
+                this.gameInstance.restart();
+                this.__switch_menu('mainmenu');
+                this.__hide_menu("overlay");
+                // this.menuElements.overlay.hidden = true;
+            } else if (menuOption.match(/quit/)) {
+                this.__changeGamestate("mainmenu");
+            }
+        })
+
+        defeatMenu.addEventListener('click', (e) => {
+            let menuOption = e.target.getAttribute('data-option');
+            if (menuOption.match(/restart/)) {
                 this.gameInstance.restart();
                 this.__switch_menu('mainmenu');
                 this.__hide_menu("overlay");

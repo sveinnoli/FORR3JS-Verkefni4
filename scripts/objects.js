@@ -1,35 +1,59 @@
-
 const ctx = document.getElementById('canvas').getContext('2d');
-class GameObject {
-    constructor(x, y, xv, yv) {
-        this.x = x;
-        this.y = y;
-        this.xv = xv;
-        this.yv = yv;
-    }
+
+export class Helpers {
 
     dXFromAngleAndHypot(angle, hypot) {
         return hypot * Math.cos(this.toRad(angle));
     }
+
     dYFromAngleAndHypot(angle, hypot) {
         return hypot * Math.sin(this.toRad(angle));
     }
 
-    _getTipPos() {
-        return {
-            x: this.x + this.dXFromAngleAndHypot(this.rotation, 50 / 2),
-            y: this.y + this.dYFromAngleAndHypot(this.rotation, 50 / 2)
-        };
-    }
+
 
     toRad(deg) {
         return deg*(Math.PI/180);
     }
 }
 
+class GameObject extends Helpers {
+    constructor(x, y, xv, yv, size, rotation) {
+        super();
+        this.x = x;
+        this.y = y;
+        this.xv = xv;
+        this.yv = yv;
+        this.size = size;
+        this.rotation = rotation;
+    }
+
+    _getTipPos() {
+        return {
+            x: this.x + this.dXFromAngleAndHypot(this.rotation, this.size/2),
+            y: this.y + this.dYFromAngleAndHypot(this.rotation, this.size/2)
+        };
+    }
+}
+
 
 class Bullet extends GameObject {
+    constructor(x, y, xv, yv, size, rotation) {
+        super(x, y, xv, yv, size, rotation);
+        // Determines how long the bullet will stay
+        this.age = 0;
+    }
 
+    move() {
+        this.x += this.dXFromAngleAndHypot(this.rotation, this.xv);
+        this.y += this.dYFromAngleAndHypot(this.rotation, this.yv); 
+    }
+
+    render() {
+        ctx.beginPath();
+        ctx.rect(this.x, this.y, this.size, this.size);
+        ctx.fill();
+    }
 }
 
 
@@ -37,8 +61,8 @@ class Bullet extends GameObject {
     AI
 */
 export class Saucer extends GameObject {
-    constructor(x, y, xv, yv) {
-        super(x, y, xv, yv);
+    constructor(x, y, xv, yv, size, rotation) {
+        super(x, y, xv, yv, size, rotation);
         // Implement this one after asteroids and ships are working
     }
 }
@@ -48,122 +72,88 @@ export class Saucer extends GameObject {
     AI
 */
 export class Asteroid extends GameObject {
-    constructor(x, y, xv, yv) {
-        super(x, y, xv, yv);
-        this.x = x;
-        this.y = y;
-        this.xv = xv;
-        this.yv = yv;
+    constructor(sides, x, y, xv, yv, size, rotation, stage=3) {
+        super(x, y, xv, yv, size, rotation);
+        this.sides = sides;
+        this.deviation1 = Math.random()*1+0.5;
+        this.deviation2 = Math.random()*1+0.5;
+        this.rotateBy = Math.random()*0.01+0.005;
+        this.stage = stage;
     }
 
     render() {
         ctx.beginPath();
-        ctx.arc(this.x, this.y, 25, 0, 2 * Math.PI);
-        ctx.fillStyle = "#b32d2e";
-        ctx.lineWidth = 2;
-        ctx.strokeStyle = '#f86368';
+        this.rotation += this.rotateBy;
+        ctx.strokeStyle = "orange"; 
+        ctx.lineWidth = 1;
+        let fullRotation = 2 * Math.PI
+        // Generate sides
+        for(let i = 0; i <= this.sides; i++) {
+            ctx.lineTo(this.x + ( Math.cos( fullRotation * (i / this.sides) + this.rotation ) * this.size), this.y + ( Math.sin( fullRotation * (i / this.sides) + this.rotation) * this.size) );
+        }   
         ctx.fill();
         ctx.stroke();
     }
 
     move() {
-        Math.random() > 0.99 ? this.xv *= -1 : 0;
-        Math.random() > 0.99 ? this.yv *= -1 : 0;
+        Math.random() > 0.998 ? this.xv *= -1 : 0;
+        Math.random() > 0.998 ? this.yv *= -1 : 0;
         this.x += this.xv*3*(Math.sin(Math.random()));
         this.y += this.yv*2*Math.cos(Math.random());
     }
 
-    collision() {
-        if (this.x > canvas.width || this.x < 0) {
-            this.x = canvas.width/2;
-            this.y = canvas.height/2;
+    boundaryChecking() {
+        if (this.y + (this.size * 1.5) < 0) {
+            this.y = canvas.height + this.size;
+        } else if (this.y-this.size > canvas.height) {
+            this.y = -this.size;
         }
 
-        if (this.y > canvas.height || this.y < 0) {
-            this.x = canvas.width/2;
-            this.y = canvas.height/2;
+        if (this.x + (this.size * 1.5) < 0) {
+            this.x = canvas.width + this.size;
+        } else if (this.x-this.size > canvas.width) {
+            this.x = -this.size;
         }
-
     }
 };
 
 
-/*
-    Player
-*/
 export class Ship extends GameObject {
-    constructor(xv, yv) {
-        super(canvas.width/2, canvas.height/2, xv, yv);
-        this.xv = xv;
-        this.yv = yv;
-        this.setupKeys();
-        this.keys = {}
-        this.rotation = 0;
+    constructor(xv, yv, size, rotation) {
+        super(canvas.width/2, canvas.height/2, xv, yv, size, rotation);
+        this.bullets = [];
     }
 
-    setupKeys() {
-        window.addEventListener('keydown', (e) => {
-            this.keys[e.key.toLocaleLowerCase()] = true;
-        });
+    shoot() {
+        let pos = this._getTipPos();
+        this.bullets.push(new Bullet(pos.x, pos.y, this.xv+10, this.yv+10, 5, this.rotation))
+    }
 
-        window.addEventListener('keyup', (e) => {
-            this.keys[e.key.toLowerCase()] = false;
-        })
+    moveForward() {
+        this.x += this.dXFromAngleAndHypot(this.rotation, this.xv);
+        this.y += this.dYFromAngleAndHypot(this.rotation, this.yv);
+    }
+
+    moveBackwards() {
+        this.x -= this.dXFromAngleAndHypot(this.rotation, this.xv);
+        this.y -= this.dYFromAngleAndHypot(this.rotation, this.yv);
+    }
+
+    rotateLeft() {
+        this.rotation = (this.rotation % 360) - 5;
+    }
+
+    rotateRight() {
+        this.rotation = (this.rotation % 360) + 5;
     }
 
     update() {
-        if (this.keys["w"]) { 
-            this.x += this.dXFromAngleAndHypot(this.rotation, this.xv);
-            this.y += this.dYFromAngleAndHypot(this.rotation, this.yv);
+        if (this.bullets) {
+            for (let i = 0; i < this.bullets.length; i++) {
+                this.bullets[i].render();
+                this.bullets[i].move();
+            }
         }
-
-        if (this.keys["s"]) {
-            this.x -= this.dXFromAngleAndHypot(this.rotation, this.xv);
-            this.y -= this.dYFromAngleAndHypot(this.rotation, this.yv);
-        }
-        
-        if (this.keys["a"]) {
-            this.rotation = (this.rotation % 360) - 1.7;
-        }
-        
-        
-        if (this.keys["d"]) {
-            this.rotation = (this.rotation % 360) + 1.7;
-        } 
-    }
-
-    renderTriangle() {
-        let rotRad = this.toRad(this.rotation);
-        ctx.beginPath();
-
-        // Go to origo of triangle
-        ctx.moveTo(this.x, this.y);
-        cosRad = Math.cos(rotRad);
-        sinRad = Math.sin(rotRad);
-        ctx.lineTo(this.x + (cosRad * 100) - sinRad * 100, this.y + (cosRad * 100) + sinRad * 100);
-
-        ctx.lineTo(this.x - (cosRad * 100) + sinRad * 100, this.y - (cosRad * 100) - sinRad * 100);
-        ctx.lineTo(this.x - (cosRad * 100) - sinRad * 100, this.y + (cosRad * 100) - sinRad * 100);
-
-        // end same at same point as started
-        ctx.lineTo(this.x + (cosRad * 100) - sinRad * 100, this.y + (cosRad * 100) + sinRad * 100);
-
-        // Color the triangle in
-        ctx.fillStyle = "rgb(172, 50, 50)";
-        ctx.fill();
-    }
-
-    render() {
-        let rotRad = this.toRad(this.rotation);
-        ctx.save();
-        ctx.translate(this.x, this.y)
-        ctx.rotate(rotRad)
-        ctx.fillStyle = "blue";
-        ctx.beginPath();
-        ctx.arc(0, 0, 25, 0, Math.PI*2);
-        ctx.fillRect(0, 0, 25, 25)
-        ctx.fill();
-        ctx.restore();
     }
 
     renderShip() {
@@ -174,7 +164,7 @@ export class Ship extends GameObject {
         let opposite = this.rotation <= 1 ? this.rotation + 180 : this.rotation - 180;
         let startAngle = this.toRad(opposite - 22.5);
         let endAngle = this.toRad(opposite + 22.5);
-        ctx.arc(x, y, 50, startAngle, endAngle);
+        ctx.arc(x, y, this.size, startAngle, endAngle);
         ctx.lineTo(x, y);
         ctx.closePath();
         ctx.lineWidth = 2;
