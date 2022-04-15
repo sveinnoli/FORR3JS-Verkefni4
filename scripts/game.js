@@ -402,6 +402,11 @@ export class Game {
             this.asteroids[i].render();
         }
 
+        if (this.timestamp - this.oldTimestamp > this.gameConfig.ship.fireRate) {
+            this.ship.shoot(this.screenRatio);
+            this.oldTimestamp = this.timestamp;
+        }
+
         this.ship.update(this.fps, this.gameConfig.bullet.maxAge);
         this.ship.renderShip();
         this.ship.boundaryChecking();
