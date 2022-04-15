@@ -98,7 +98,7 @@ export class Game {
             console.log("touchend");
         })
         
-        canvas.addEventListener("touchmove", (e) => {
+        canvas.addEventListener("touchmove", (e) => { 
             // Here we adjust the heading 
             console.log("touchmove");
             let touches = e.changedTouches;
