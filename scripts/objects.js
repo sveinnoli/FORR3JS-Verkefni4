@@ -140,7 +140,7 @@ export class Ship extends GameObject {
             let dx = this.x-this.goal.x;
             let dy = this.y-this.goal.y;
 
-            // Only move forward if we are not on our goal already
+            // Only move forward if we are not on our goal already 
             if (Math.abs(dx) + Math.abs(dy) > this.size) {
                 this.moveForward();
             } else {
