@@ -55,6 +55,12 @@ body {
     width: 100%;
 }
 
+.score-counter {
+    position: absolute;
+    left: 0;
+    padding: 2px 0 0 4px;
+}
+
 
 .options-overlay {
     height: 100vh;
@@ -107,6 +113,14 @@ body {
     width: 100%;
     position: absolute;
     transition: transform 0.67s;
+}
+
+.victory .menu-title{
+    color: green;
+}
+
+.defeat .menu-title {
+    color: red;
 }
 
 /* ------- Buttons for returning || fullscreening || pausing || opening shop --------*/

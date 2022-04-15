@@ -9,8 +9,8 @@ export const uiElements = {
         "overlay" : document.querySelector(".options-overlay"),
         "resume" : document.querySelector('.mainmenu'),
         "victory" : document.querySelector(".victory"),
-        "defeat" : document.querySelector(".defeat")
-
+        "defeat" : document.querySelector(".defeat"),
+        "score" : document.querySelector(".score-counter")
     },
     buttons : {   
         "return" : document.querySelector(".options-return"), 
@@ -19,7 +19,7 @@ export const uiElements = {
         "shop" : document.querySelector(".options-shop"),
         "fullscreen" : document.querySelector('.options-fullscreen'), 
     },
-    gameState : document.querySelector('data[name="game-state"]'),
+    gameState : document.querySelector('data[name="game-state"]')
 } 
 
 // can keep game variables here 

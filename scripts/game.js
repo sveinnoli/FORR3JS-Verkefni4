@@ -17,19 +17,20 @@ export class Game {
         this.settings = {}
         this.pressedKeys = {};  
         this.currentAnimationFrameID;
+        this.scoreElem = uiElements.menuElements.score;
         this.fps = 60; // Can scale it dynamically but browser runs at ~ 60 fps
         this.gameState = uiElements.gameState;        
         this.screenSize = { "width": undefined, "height": undefined } 
-        this.screenRatio = canvas.height/window.innerHeight;
         
         // Timings
         this.oldTimestamp = 0;
         this.timestamp = 0;
-
+        
         this.__setup_gamestate_handler();
         this.__setup_event_handlers();
         this.setupKeys();
         this.handleResize(); // Call once on startup to adjust screen
+        this.screenRatio = canvas.height/window.innerHeight;
     }
 
     handleInputs() {
@@ -60,8 +61,9 @@ export class Game {
 
  
 
-    updateScore() {
+    displayScore() {
         // Here we update the score counter on the canvas
+        this.scoreElem.textContent = `Score: ${this.score.toFixed(2)}`;
     }
 
     setupKeys() {
@@ -75,25 +77,37 @@ export class Game {
 
     }
 
-    generateAsteroids() {
-        for (let i = 0; i < this.gameConfig.maxAsteroids; i++) {
+    generateAsteroids(numAsteroids=this.gameConfig.maxAsteroids, spawnOutOfBounds = false) {
+        for (let i = 0; i < numAsteroids; i++) {
             // Here we need to dynamically scale the velocities and size based on screensize
             let size = Math.random()*12 + 25 * this.screenRatio;
             let x;
             let y;
 
             // Randomly place the asteroids at the outer boundaries to avoid collision on game start
-            if (Math.random() > 0.5) {
-                // Starts top or bottom
-                x = Math.random() * canvas.width;
-                y = Math.random() > 0.5 ? canvas.height-Math.random()*canvas.height*0.3: Math.random()*canvas.height*0.3;
+            if (spawnOutOfBounds) {
+                if (Math.random() > 0.5) {
+                    // Starts top or bottom
+                    x = Math.random() * canvas.width;
+                    y = Math.random() > 0.5 ? canvas.height+size/2: -size/2;
+                } else {
+                    // Starts left or right
+                    x = Math.random() > 0.5 ? canvas.width+size/2: -size/2;
+                    y = Math.random()*canvas.height; 
+                }
             } else {
-                // Starts left or right
-                x = Math.random() > 0.5 ? canvas.width-Math.random()*canvas.width*0.3: Math.random()*canvas.width*0.3;
-                y = Math.random()*canvas.height; 
+                if (Math.random() > 0.5) {
+                    // Starts top or bottom
+                    x = Math.random() * canvas.width;
+                    y = Math.random() > 0.5 ? canvas.height-Math.random()*canvas.height*0.3: Math.random()*canvas.height*0.3;
+                } else {
+                    // Starts left or right
+                    x = Math.random() > 0.5 ? canvas.width-Math.random()*canvas.width*0.3: Math.random()*canvas.width*0.3;
+                    y = Math.random()*canvas.height; 
+                }
             }
-            let xv = Math.random() > 0.5 ? Math.random()*0.2 + 0.2 : -Math.random()*0.2 - 0.2;
-            let yv = Math.random() > 0.5 ? Math.random()*0.2 + 0.2 : -Math.random()*0.2 - 0.2; 
+            let xv = Math.random() > 0.5 ? Math.random()*0.3 + 0.3 : -Math.random()*0.3 - 0.3;
+            let yv = Math.random() > 0.5 ? Math.random()*0.3 + 0.3 : -Math.random()*0.3 - 0.3; 
             this.asteroids.push(
                 new Asteroid(
                     Math.round(Math.random()*2+6),  // Sides
@@ -151,7 +165,6 @@ export class Game {
     */
     handleResize() {
         this.screenRatio = canvas.height/window.innerHeight;
-        // console.log(canvas.width/1920, canvas.height/1080);
         let gameState = this.gameState.getAttribute("gamestate")
         if (gameState.match(/playing|resume/)) {
             // Detected change in window size while playing send pause to gameState
@@ -159,7 +172,7 @@ export class Game {
         }
         
         let newWidth = window.innerWidth;
-        let newHeight = window.innerWidth / 1.778;
+        let newHeight = window.innerWidth / 1.778; // 16/9 aspect ratio
 
         if ((this.screenSize.width && this.screenSize.height)) {
             this.__handle_dimension_change(newWidth, newHeight);
@@ -213,18 +226,35 @@ export class Game {
         })
     }
 
+    circleRectangleCollision(circle, rectangle) {
+        // Detects collision between a circle and a square
+        let rectX = rectangle.x-rectangle.size/2
+        let rectY = rectangle.y-rectangle.size/2;
+        var distX = Math.abs(circle.x - rectX-rectangle.size/2);
+        var distY = Math.abs(circle.y - rectY-rectangle.size/2);
+    
+        if (distX > (rectangle.size/2 + circle.size)) { return false; }
+        if (distY > (rectangle.size/2 + circle.size)) { return false; }
+        if (distX <= (rectangle.size/2)) { return true; } 
+        if (distY <= (rectangle.size/2)) { return true; }
+    
+        var dx = distX-rectangle.size/2;
+        var dy = distY-rectangle.size/2;
+        console.log(dx*dx+dy*dy <= circle.size*circle.size)
+        return (dx*dx+dy*dy<=(circle.size*circle.size));
+    }
+
     detectCollision() {
-        // TODO change collision to use boxes instead to get more accurate results
+        // TODO csizeange collision to use boxes instead to get more accurate results
         // let j = this.asteroids.length-1;
         // let i = this.ship.bullets.length-1;
         let tempAsteroids = []
         for (let j = 0; j < this.asteroids.length; j++) {
             // Detect collision with bullet and asteroid        
             for (let i = 0; i < this.ship.bullets.length; i++) {
-                let delta = Math.sqrt((this.asteroids[j].x - this.ship.bullets[i].x)**2 + (this.asteroids[j].y - this.ship.bullets[i].y)**2);
-                if (delta < this.ship.bullets[i].size+this.asteroids[j].size) {
-                    console.log("Bullet collided with asteroid");    
-                    this.score++;
+                // let delta = Math.sqrt((this.asteroids[j].x - this.ship.bullets[i].x)**2 + (this.asteroids[j].y - this.ship.bullets[i].y)**2);
+                if (this.circleRectangleCollision(this.ship.bullets[i], this.asteroids[j])) {
+                    this.score += this.asteroids[j].stage*1/3;
                     // Splitting asteroid  
                     if (this.asteroids[j].stage > 0) {
                         for (let k = 0; k < this.gameConfig.asteroid.splitBy; k++) {
@@ -244,11 +274,7 @@ export class Game {
                                 this.asteroids[j].stage-1               	                                              // Stage
                             ));
                         }
-                    } else {
-                        if (this.asteroids.length === 0) {
-                            // Dosen't work as the asteroid gets removed in the end :(
-                        }
-                    }
+                    } 
                     // Mark asteroid and bullet for removal
                     this.ship.bullets[i].age = this.gameConfig.bullet.maxAge;
                     this.asteroids[j].size = 0;  
@@ -256,16 +282,18 @@ export class Game {
             }
             
             // Detect collision with asteroid and ship
-            // Change to rectangle-circle hitbox
-            let deltaAS = Math.sqrt((this.asteroids[j].x - this.ship.x)**2 + (this.asteroids[j].y - this.ship.y)**2);
-            if (deltaAS < this.asteroids[j].size + this.ship.size) {
-                // Here we display gameover and all that shieeet
+            // let deltaAS = Math.sqrt((this.asteroids[j].x - this.ship.x)**2 + (this.asteroids[j].y - this.ship.y)**2);
+            if (this.circleRectangleCollision(this.asteroids[j], this.ship)) {
+                // Player looses, collision between player and asteroid occured
                 this.__changeGamestate("defeat")
             }
         }
         this.asteroids = this.asteroids.filter(asteroid => asteroid.size > 0);
-        if (this.asteroids.length === 0) {
-            this.__changeGamestate("victory");
+
+        // Spawn more asteroids in the field when the number has gone below a certain threshold
+        if (this.asteroids.length <= this.gameConfig.maxAsteroids/1.5) {
+            // this.__changeGamestate("victory");
+            this.generateAsteroids(this.gameConfig.maxAsteroids/1.5, true);
         }
         this.ship.bullets = this.ship.bullets.filter(bullet => bullet.age < this.gameConfig.bullet.maxAge);
 
@@ -324,9 +352,9 @@ export class Game {
         ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
     }
 
-
     loop(timestamp) {
         this.timestamp = timestamp;
+        this.displayScore();
         this.clearScreen();
         this.handleInputs();
         // Cache length so it only has to be calculated once per loop
@@ -342,6 +370,11 @@ export class Game {
         this.ship.boundaryChecking();
 
         this.detectCollision();
+        for (let n = 0; n < this.asteroids.length; n++) {
+            if (this.circleRectangleCollision(this.asteroids[n], this.ship)) {
+                console.log("collision")
+            }
+        }
         this.currentAnimationFrameID = window.requestAnimationFrame(this.loop.bind(this));
     }
 }

@@ -91,7 +91,7 @@ export class UserInterface {
 
     set_score() {
         document.querySelectorAll("[data-option='score']").forEach((i) => {
-            i.textContent = this.gameInstance.score;
+            i.textContent = this.gameInstance.score.toFixed(2);
         }) 
 
     }
@@ -152,25 +152,29 @@ export class UserInterface {
 
         victoryMenu.addEventListener('click', (e) => {
             let menuOption = e.target.getAttribute('data-option');
-            if (menuOption.match(/restart/)) {
-                this.gameInstance.restart();
-                this.__switch_menu('mainmenu');
-                this.__hide_menu("overlay");
-                // this.menuElements.overlay.hidden = true;
-            } else if (menuOption.match(/quit/)) {
-                this.__changeGamestate("mainmenu");
+            if (menuOption) {
+                if (menuOption.match(/restart/)) {
+                    this.gameInstance.restart();
+                    this.__switch_menu('mainmenu');
+                    this.__hide_menu("overlay");
+                    // this.menuElements.overlay.hidden = true;
+                } else if (menuOption.match(/quit/)) {
+                    this.__changeGamestate("mainmenu");
+                }
             }
         })
 
         defeatMenu.addEventListener('click', (e) => {
             let menuOption = e.target.getAttribute('data-option');
-            if (menuOption.match(/restart/)) {
-                this.gameInstance.restart();
-                this.__switch_menu('mainmenu');
-                this.__hide_menu("overlay");
-                // this.menuElements.overlay.hidden = true;
-            } else if (menuOption.match(/quit/)) {
-                this.__changeGamestate("mainmenu");
+            if (menuOption) {
+                if (menuOption.match(/restart/)) {
+                    this.gameInstance.restart();
+                    this.__switch_menu('mainmenu');
+                    this.__hide_menu("overlay");
+                    // this.menuElements.overlay.hidden = true;
+                } else if (menuOption.match(/quit/)) {
+                    this.__changeGamestate("mainmenu");
+                }
             }
         })
         

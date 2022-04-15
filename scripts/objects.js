@@ -127,8 +127,9 @@ export class Ship extends GameObject {
     shoot(ratio) {
         let pos = this._getTipPos();
         let size = 10*ratio;
-        console.log(size);
-        this.bullets.push(new Bullet(pos.x, pos.y, this.xv+10, this.yv+10, size, this.rotation))
+        for (let n = 0; n < 10; n++) {
+            this.bullets.push(new Bullet(pos.x, pos.y, this.xv, this.yv, size, this.rotation*n))
+        }
     }
 
     moveForward() {
@@ -150,6 +151,7 @@ export class Ship extends GameObject {
     }
 
     update(fps, maxAge) {
+        let newBullets = [];
         if (this.bullets) {
             for (let i = 0; i < this.bullets.length; i++) {
                 this.bullets[i].render();
@@ -157,9 +159,13 @@ export class Ship extends GameObject {
                 this.bullets[i].age += 1/fps;
             }
 
-            this.bullets.filter((bullet) => {
-                bullet.age < maxAge;
-            } ) 
+            // Use for loop instead of filter because performance
+            for (let i = 0; i < this.bullets.length; i++) {
+                if (this.bullets[i].age < maxAge) {
+                    newBullets.push(this.bullets[i]);
+                }
+            }
+            this.bullets = newBullets;
         }
     }
 
