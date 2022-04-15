@@ -77,6 +77,17 @@ export class Asteroid extends GameObject {
         this.deviation2 = Math.random()*1+0.5;
         this.rotateBy = Math.random()*0.01+0.005;
         this.stage = stage;
+        this.randLength = [];
+        for (let i = 0; i < this.sides; i++) {
+            this.randLength.push(Math.random()*this.size*0.15+this.size/1.1);
+        }
+    }
+
+    newRand() {
+        this.randLength = [];
+        for (let i = 0; i < this.sides; i++) {
+            this.randLength.push(Math.random()*this.size*0.15+this.size/1.1);
+        }
     }
 
     render() {
@@ -85,9 +96,10 @@ export class Asteroid extends GameObject {
         ctx.strokeStyle = "orange"; 
         ctx.lineWidth = 1;
         let fullRotation = 2 * Math.PI
+        
         // Generate sides
         for(let i = 0; i <= this.sides; i++) {
-            ctx.lineTo(this.x + ( Math.cos( fullRotation * (i / this.sides) + this.rotation ) * this.size), this.y + ( Math.sin( fullRotation * (i / this.sides) + this.rotation) * this.size) );
+            ctx.lineTo(this.x + ( Math.cos( fullRotation * (i / this.sides) + this.rotation ) * this.randLength[i]), this.y + ( Math.sin( fullRotation * (i / this.sides) + this.rotation) * this.randLength[i]) );
         }   
         ctx.fill();
         ctx.stroke();

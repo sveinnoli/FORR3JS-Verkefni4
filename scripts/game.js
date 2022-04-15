@@ -105,7 +105,7 @@ export class Game {
             this.ship.setGoal(touches[0].clientX, touches[0].clientY-canvas.getBoundingClientRect().top);
             console.log("Here: \n", touches[0].clientY, this.screenRatio*touches[0].clientY);
             if (touches.length > 1 ) {
-                alert("Two");
+                // Here we need to rotate the player
             }
         })
         
@@ -155,8 +155,8 @@ export class Game {
                     y = Math.random()*canvas.height; 
                 }
             }
-            let xv = Math.random() > 0.5 ? Math.random()*0.3 + 0.3 : -Math.random()*0.3 - 0.3;
-            let yv = Math.random() > 0.5 ? Math.random()*0.3 + 0.3 : -Math.random()*0.3 - 0.3; 
+            let xv = Math.random() > 0.5 ? Math.random()*0.3 + 0.4 : -Math.random()*0.3 - 0.4;
+            let yv = Math.random() > 0.5 ? Math.random()*0.3 + 0.4 : -Math.random()*0.3 - 0.4; 
             this.asteroids.push(
                 new Asteroid(
                     Math.round(Math.random()*2+6),  // Sides
@@ -267,6 +267,7 @@ export class Game {
                 asteroid.size *= heightRatio;
                 asteroid.xv *= heightRatio;
                 asteroid.yv *= heightRatio;
+                asteroid.newRand();
             }
         })
     }
