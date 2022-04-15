@@ -17,8 +17,8 @@ export class Game {
         this.settings = {}
         this.pressedKeys = {};  
         this.currentAnimationFrameID;
-        this.scoreElem = uiElements.menuElements.score;
         this.fps = 60; // Can scale it dynamically but browser runs at ~ 60 fps
+        this.scoreElem = uiElements.menuElements.score;
         this.gameState = uiElements.gameState;        
         this.screenSize = { "width": undefined, "height": undefined } 
         
@@ -321,7 +321,7 @@ export class Game {
             this.gameConfig.ship.fireRate = 1;
         }
         this.start();
-    }   
+    }    
 
     resetGame() {
         window.cancelAnimationFrame(this.currentAnimationFrameID);
