@@ -2,15 +2,13 @@ const ctx = document.getElementById('canvas').getContext('2d');
 
 export class Helpers {
 
-    dXFromAngleAndHypot(angle, hypot) {
-        return hypot * Math.cos(this.toRad(angle));
+    xDirAngle(angle, length) {
+        return length * Math.cos(this.toRad(angle));
     }
 
-    dYFromAngleAndHypot(angle, hypot) {
-        return hypot * Math.sin(this.toRad(angle));
+    yDirAngle(angle, length) {
+        return length * Math.sin(this.toRad(angle));
     }
-
-
 
     toRad(deg) {
         return deg*(Math.PI/180);
@@ -30,8 +28,8 @@ class GameObject extends Helpers {
 
     _getTipPos() {
         return {
-            x: this.x + this.dXFromAngleAndHypot(this.rotation, this.size/2),
-            y: this.y + this.dYFromAngleAndHypot(this.rotation, this.size/2)
+            x: this.x + this.xDirAngle(this.rotation, this.size/2),
+            y: this.y + this.yDirAngle(this.rotation, this.size/2)
         };
     }
 }
@@ -45,8 +43,8 @@ class Bullet extends GameObject {
     }
 
     move() {
-        this.x += this.dXFromAngleAndHypot(this.rotation, this.xv);
-        this.y += this.dYFromAngleAndHypot(this.rotation, this.yv); 
+        this.x += this.xDirAngle(this.rotation, this.xv);
+        this.y += this.yDirAngle(this.rotation, this.yv); 
     }
 
     render() {
@@ -160,13 +158,13 @@ export class Ship extends GameObject {
     }
 
     moveForward() {
-        this.x += this.dXFromAngleAndHypot(this.rotation, this.xv);
-        this.y += this.dYFromAngleAndHypot(this.rotation, this.yv);
+        this.x += this.xDirAngle(this.rotation, this.xv);
+        this.y += this.yDirAngle(this.rotation, this.yv);
     }
 
     moveBackwards() {
-        this.x -= this.dXFromAngleAndHypot(this.rotation, this.xv);
-        this.y -= this.dYFromAngleAndHypot(this.rotation, this.yv);
+        this.x -= this.xDirAngle(this.rotation, this.xv);
+        this.y -= this.yDirAngle(this.rotation, this.yv);
     }
 
     rotateLeft() {
@@ -209,7 +207,6 @@ export class Ship extends GameObject {
             this.x = 0;
         }
     }
-
 
     renderShip() {
         let pos = this._getTipPos();

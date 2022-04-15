@@ -104,6 +104,9 @@ export class Game {
             let touches = e.changedTouches;
             this.ship.setGoal(touches[0].clientX, touches[0].clientY-canvas.getBoundingClientRect().top);
             console.log("Here: \n", touches[0].clientY, this.screenRatio*touches[0].clientY);
+            if (touches.length > 1 ) {
+                alert("Two");
+            }
         })
         
         canvas.addEventListener("touchcancel", (e) => {
@@ -296,14 +299,14 @@ export class Game {
                     if (this.asteroids[j].stage > 0) {
                         for (let k = 0; k < this.gameConfig.asteroid.splitBy; k++) {
                             let randAng = Math.random()*360;
-                            let xv = this.helper.dXFromAngleAndHypot(randAng, this.asteroids[j].xv*1.1+0.2);
-                            let yv = this.helper.dYFromAngleAndHypot(randAng, this.asteroids[j].xv*1.1+0.2);
+                            let xv = this.helper.xDirAngle(randAng, this.asteroids[j].xv*1.1+0.2);
+                            let yv = this.helper.yDirAngle(randAng, this.asteroids[j].xv*1.1+0.2);
                             xv = Math.cos(randAng)*this.asteroids[j].xv*1.1;
                             yv = Math.sin(randAng)*this.asteroids[j].yv*1.1;
                             tempAsteroids.push(new Asteroid(
                                 Math.round(Math.random()*2+6),                                                            // Sides
-                                this.asteroids[j].x + this.helper.dXFromAngleAndHypot(randAng, this.asteroids[j].size),   // X          
-                                this.asteroids[j].y + this.helper.dYFromAngleAndHypot(randAng, this.asteroids[j].size),   // Y    
+                                this.asteroids[j].x + this.helper.xDirAngle(randAng, this.asteroids[j].size),   // X          
+                                this.asteroids[j].y + this.helper.yDirAngle(randAng, this.asteroids[j].size),   // Y    
                                 xv,                                     	                                              // XV
                                 yv,                                     	                                              // YV
                                 this.asteroids[j].size/1.2,             	                                              // Size
