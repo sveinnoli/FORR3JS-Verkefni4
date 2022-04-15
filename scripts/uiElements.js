@@ -21,8 +21,3 @@ export const uiElements = {
     },
     gameState : document.querySelector('data[name="game-state"]')
 } 
-
-// can keep game variables here 
-export const gameState = {
-
-}

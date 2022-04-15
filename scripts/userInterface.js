@@ -78,7 +78,7 @@ export class UserInterface {
                         //! Still has no element in uiElements
                         this.__switch_menu(newState);
                         this.__show_menu('overlay');
-                    } else if (newState.match(/victory|defeat/)) {
+                    } else if (newState.match(/defeat/)) {
                         this.__switch_menu(newState);
                         this.__show_menu('overlay');
                         this.set_score();
@@ -103,7 +103,6 @@ export class UserInterface {
         const settingsMenu = document.querySelector(".settings .options__menu-sidemenu");
         const difficultyMenu = document.querySelector(".difficulty .options__menu-sidemenu")
         const pauseMenu = document.querySelector('.pause .options__menu-sidemenu');
-        const victoryMenu = document.querySelector('.victory .options__menu-sidemenu');
         const defeatMenu = document.querySelector('.defeat .options__menu-sidemenu');
         
         // Button elements
@@ -147,20 +146,6 @@ export class UserInterface {
                 // this.menuElements.overlay.hidden = true;
             } else if (menuOption.match(/quit/)) {
                 this.__changeGamestate("mainmenu");
-            }
-        })
-
-        victoryMenu.addEventListener('click', (e) => {
-            let menuOption = e.target.getAttribute('data-option');
-            if (menuOption) {
-                if (menuOption.match(/restart/)) {
-                    this.gameInstance.restart();
-                    this.__switch_menu('mainmenu');
-                    this.__hide_menu("overlay");
-                    // this.menuElements.overlay.hidden = true;
-                } else if (menuOption.match(/quit/)) {
-                    this.__changeGamestate("mainmenu");
-                }
             }
         })
 

@@ -122,14 +122,39 @@ export class Ship extends GameObject {
     constructor(xv, yv, size, rotation) {
         super(canvas.width/2, canvas.height/2, xv, yv, size, rotation);
         this.bullets = [];
+        this.goal = {"x": canvas.width/2, "y": canvas.height/2} // Ship will attempt to reach this point, once it is reached it will be set to undefined 
+        this.angleGoal;
+    }
+
+    setGoal(x, y) {
+        this.goal.x = x; 
+        this.goal.y = y-this.size*1.5;
+        let angle = Math.atan2(this.goal.y - this.y-this.size/1.5, this.goal.x-this.x)*180/Math.PI;
+        if ( -2 < angle < 2) {
+            this.rotation = angle;
+        } 
+    }
+
+    moveCommand() {
+        if (this.goal.x && this.goal.y) {
+            let dx = this.x-this.goal.x;
+            let dy = this.y-this.goal.y;
+
+            // Only move forward if we are not on our goal already
+            if (Math.abs(dx) + Math.abs(dy) > this.size) {
+                this.moveForward();
+            } else {
+                // Remove the goal
+                this.goal.x = undefined;
+                this.goal.y = undefined;
+            }
+        }
     }
 
     shoot(ratio) {
         let pos = this._getTipPos();
-        let size = 10*ratio;
-        for (let n = 0; n < 10; n++) {
-            this.bullets.push(new Bullet(pos.x, pos.y, this.xv, this.yv, size, this.rotation*n))
-        }
+        let size = 8*ratio;
+        this.bullets.push(new Bullet(pos.x, pos.y, this.xv*2, this.yv*2, size, this.rotation))
     }
 
     moveForward() {

@@ -28,7 +28,6 @@
                         <div class="options__menu-item" data-option="difficulty">Difficulty</div>
                         <div class="options__menu-item" data-option="settings">Settings</div>
                     </div>
-                    
                 </div>
                 <!-- Settings menu -->
                 <div class="options-skeleton settings">
@@ -56,14 +55,7 @@
                         <div class="options__menu-item" data-option="quit">Quit</div>
                     </div>
                 </div>
-                <div class="options-skeleton victory">
-                    <h2 class="menu-title">You won!</h2>
-                    <div class="options__menu-sidemenu">
-                        <div class="options__menu-item">Score: <span data-option="score"></span></div>
-                        <div class="options__menu-item" data-option="restart">Restart</div>
-                        <div class="options__menu-item" data-option="quit">Quit</div>
-                    </div>
-                </div>
+                <!-- Defeat menu -->
                 <div class="options-skeleton defeat">
                     <h2 class="menu-title">You lost!</h2>
                     <div class="options__menu-sidemenu">
@@ -94,6 +86,7 @@
             <canvas id="canvas"></canvas>
         </div>
     </div>
+    
 <script type="module" src="scripts/main.js" async></script>
 <!-- This element is used to indicate gamestate options are <( mainmenu || paused || playing || resume || shop )> -->
 <data name="game-state" hidden gamestate="mainmenu"></data>

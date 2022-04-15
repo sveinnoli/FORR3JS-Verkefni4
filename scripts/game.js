@@ -16,11 +16,13 @@ export class Game {
         this.gameConfig = {};
         this.settings = {}
         this.pressedKeys = {};  
+        this.touches = {}
         this.currentAnimationFrameID;
         this.fps = 60; // Can scale it dynamically but browser runs at ~ 60 fps
         this.scoreElem = uiElements.menuElements.score;
         this.gameState = uiElements.gameState;        
         this.screenSize = { "width": undefined, "height": undefined } 
+
         
         // Timings
         this.oldTimestamp = 0;
@@ -29,6 +31,7 @@ export class Game {
         this.__setup_gamestate_handler();
         this.__setup_event_handlers();
         this.setupKeys();
+        this.setupTouch();
         this.handleResize(); // Call once on startup to adjust screen
         this.screenRatio = canvas.height/window.innerHeight;
     }
@@ -52,29 +55,71 @@ export class Game {
 
         if (this.pressedKeys[" "]) {
             if (this.timestamp - this.oldTimestamp > this.gameConfig.ship.fireRate) {
-                console.log(this.screenRatio);
                 this.ship.shoot(this.screenRatio);
                 this.oldTimestamp = this.timestamp;
             }
         }
     }
-
- 
-
+    
     displayScore() {
         // Here we update the score counter on the canvas
         this.scoreElem.textContent = `Score: ${this.score.toFixed(2)}`;
     }
 
+
+    handleTouches() {
+        // Here we handle touch events
+        if (this.touches["touchmove"]) {
+            // Start movecommand 
+            
+        }
+
+        if (this.touches["touchend"]) {
+            // Cancel move command
+            
+        }
+
+        if (this.touches["touchmove"]) {
+            // Here we adjust the move command
+        }
+    }
+
+    setupTouch() {
+        // Touch listeners
+        canvas.addEventListener("touchstart", (e) => {
+            // Here we initiate move command for ship
+            console.log("Touchstart");
+            let touches = e.changedTouches;
+            this.ship.setGoal(touches[0].clientX, touches[0].clientY);
+        })
+        
+        canvas.addEventListener("touchend", (e) => {
+            // Here we cancel the move command
+            console.log("touchend");
+        })
+        
+        canvas.addEventListener("touchmove", (e) => {
+            // Here we adjust the heading 
+            console.log("touchmove");
+            let touches = e.changedTouches;
+            this.ship.setGoal(touches[0].clientX, touches[0].clientY);
+        })
+        
+        canvas.addEventListener("touchcancel", (e) => {
+            // According to MDN this occurs for example when too many points are created
+            // Could occur when the user is infact not a person but an octopus.
+            console.log("touchcancel");
+        })
+    }
+    
     setupKeys() {
         window.addEventListener('keydown', (e) => {
             this.pressedKeys[e.key.toLocaleLowerCase()] = true;
         });
-
+        
         window.addEventListener('keyup', (e) => {
             this.pressedKeys[e.key.toLowerCase()] = false;
         })
-
     }
 
     generateAsteroids(numAsteroids=this.gameConfig.maxAsteroids, spawnOutOfBounds = false) {
@@ -113,8 +158,8 @@ export class Game {
                     Math.round(Math.random()*2+6),  // Sides
                     x,                              // X
                     y,                              // Y
-                    xv,                             // XV
-                    yv,                             // YV
+                    xv*this.screenRatio,                             // XV
+                    yv*this.screenRatio,                             // YV
                     size,                           // Size
                     Math.random()*360,              // Rotation
                     2                               // Stage
@@ -123,8 +168,8 @@ export class Game {
     }
 
     generateShips() {
-        let size = 25 * canvas.height/window.innerHeight;
-        this.ship = new Ship(3, 3, size, 45);
+        let size = 25 * this.screenRatio;
+        this.ship = new Ship(3*this.screenRatio, 3*this.screenRatio, size, 45);
     }
 
     __setup_gamestate_handler() {
@@ -140,9 +185,6 @@ export class Game {
                     } else if (newState.match(/mainmenu/)) {
                         this.quit();
                     } else if (newState.match(/defeat/)) {
-                        console.log(this.gameConfig, this.settings)
-                        this.__pause_game();
-                    } else if (newState.match(/victory/)) {
                         this.__pause_game();
                     }
               }
@@ -164,7 +206,6 @@ export class Game {
         Here i may wish to move resize handling over to the UserInterface class
     */
     handleResize() {
-        this.screenRatio = canvas.height/window.innerHeight;
         let gameState = this.gameState.getAttribute("gamestate")
         if (gameState.match(/playing|resume/)) {
             // Detected change in window size while playing send pause to gameState
@@ -187,16 +228,16 @@ export class Game {
 
         this.screenSize.width = newWidth;
         this.screenSize.height = newHeight;
+        this.screenRatio = canvas.height/window.innerHeight;
     }
 
     __handle_dimension_change(newWidth, newHeight) {
-        console.log(this.screenRatio)
         // TODO make it only calculate after x time has passed to avoid
         // calculating hundreds of times per second
         let widthRatio = newWidth/this.screenSize.width;
         let heightRatio = newHeight/this.screenSize.height;
         // Sets ship on new position according to the ratio of the old screensize and new screensize and resizes them
-        if(this.ship) {
+        if (this.ship) {
             this.ship.x *= widthRatio;
             this.ship.y *= heightRatio;
             this.ship.size *= heightRatio;
@@ -240,19 +281,14 @@ export class Game {
     
         var dx = distX-rectangle.size/2;
         var dy = distY-rectangle.size/2;
-        console.log(dx*dx+dy*dy <= circle.size*circle.size)
         return (dx*dx+dy*dy<=(circle.size*circle.size));
     }
 
     detectCollision() {
-        // TODO csizeange collision to use boxes instead to get more accurate results
-        // let j = this.asteroids.length-1;
-        // let i = this.ship.bullets.length-1;
         let tempAsteroids = []
         for (let j = 0; j < this.asteroids.length; j++) {
             // Detect collision with bullet and asteroid        
             for (let i = 0; i < this.ship.bullets.length; i++) {
-                // let delta = Math.sqrt((this.asteroids[j].x - this.ship.bullets[i].x)**2 + (this.asteroids[j].y - this.ship.bullets[i].y)**2);
                 if (this.circleRectangleCollision(this.ship.bullets[i], this.asteroids[j])) {
                     this.score += this.asteroids[j].stage*1/3;
                     // Splitting asteroid  
@@ -265,8 +301,8 @@ export class Game {
                             yv = Math.sin(randAng)*this.asteroids[j].yv*1.1;
                             tempAsteroids.push(new Asteroid(
                                 Math.round(Math.random()*2+6),                                                            // Sides
-                                this.asteroids[j].x + this.helper.dXFromAngleAndHypot(randAng, this.asteroids[j].size),   // X          // X
-                                this.asteroids[j].y + this.helper.dYFromAngleAndHypot(randAng, this.asteroids[j].size),   // Y     // Y
+                                this.asteroids[j].x + this.helper.dXFromAngleAndHypot(randAng, this.asteroids[j].size),   // X          
+                                this.asteroids[j].y + this.helper.dYFromAngleAndHypot(randAng, this.asteroids[j].size),   // Y    
                                 xv,                                     	                                              // XV
                                 yv,                                     	                                              // YV
                                 this.asteroids[j].size/1.2,             	                                              // Size
@@ -282,9 +318,9 @@ export class Game {
             }
             
             // Detect collision with asteroid and ship
-            // let deltaAS = Math.sqrt((this.asteroids[j].x - this.ship.x)**2 + (this.asteroids[j].y - this.ship.y)**2);
             if (this.circleRectangleCollision(this.asteroids[j], this.ship)) {
                 // Player looses, collision between player and asteroid occured
+                window.navigator.vibrate(200);
                 this.__changeGamestate("defeat")
             }
         }
@@ -292,7 +328,6 @@ export class Game {
 
         // Spawn more asteroids in the field when the number has gone below a certain threshold
         if (this.asteroids.length <= this.gameConfig.maxAsteroids/1.5) {
-            // this.__changeGamestate("victory");
             this.generateAsteroids(this.gameConfig.maxAsteroids/1.5, true);
         }
         this.ship.bullets = this.ship.bullets.filter(bullet => bullet.age < this.gameConfig.bullet.maxAge);
@@ -357,6 +392,7 @@ export class Game {
         this.displayScore();
         this.clearScreen();
         this.handleInputs();
+        this.handleTouches();
         // Cache length so it only has to be calculated once per loop
         let i = this.asteroids.length - 1;
         for (i; i > -1; i--) {
@@ -368,13 +404,9 @@ export class Game {
         this.ship.update(this.fps, this.gameConfig.bullet.maxAge);
         this.ship.renderShip();
         this.ship.boundaryChecking();
+        this.ship.moveCommand();
 
         this.detectCollision();
-        for (let n = 0; n < this.asteroids.length; n++) {
-            if (this.circleRectangleCollision(this.asteroids[n], this.ship)) {
-                console.log("collision")
-            }
-        }
         this.currentAnimationFrameID = window.requestAnimationFrame(this.loop.bind(this));
     }
 }

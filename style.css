@@ -139,6 +139,9 @@ body {
     padding: 3px 3px;
     margin: 0 0 0 5px;
     border: var(--menu__border-width) solid black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .options-shop:active, .options-pause:active {
