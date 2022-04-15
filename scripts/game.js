@@ -90,7 +90,7 @@ export class Game {
             // Here we initiate move command for ship
             console.log("Touchstart");
             let touches = e.changedTouches;
-            this.ship.setGoal(touches[0].clientX, touches[0].clientY);
+            this.ship.setGoal(touches[0].clientX, touches[0].clientY-canvas.getBoundingClientRect().top);
         })
         
         canvas.addEventListener("touchend", (e) => {
@@ -102,7 +102,8 @@ export class Game {
             // Here we adjust the heading 
             console.log("touchmove");
             let touches = e.changedTouches;
-            this.ship.setGoal(touches[0].clientX, touches[0].clientY);
+            this.ship.setGoal(touches[0].clientX, touches[0].clientY-canvas.getBoundingClientRect().top);
+            console.log("Here: \n", touches[0].clientY, this.screenRatio*touches[0].clientY);
         })
         
         canvas.addEventListener("touchcancel", (e) => {

@@ -127,8 +127,10 @@ export class Ship extends GameObject {
     }
 
     setGoal(x, y) {
+        // Need to offset the y axis as it takes the entire window height instead of just the canvas height
+        console.log(y);
         this.goal.x = x; 
-        this.goal.y = y-this.size*1.5;
+        this.goal.y = y;
         let angle = Math.atan2(this.goal.y - this.y-this.size/1.5, this.goal.x-this.x)*180/Math.PI;
         if ( -2 < angle < 2) {
             this.rotation = angle;
