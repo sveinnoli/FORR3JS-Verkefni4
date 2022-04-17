@@ -145,6 +145,7 @@ export class UserInterface {
                 this.__hide_menu("overlay");
                 // this.menuElements.overlay.hidden = true;
             } else if (menuOption.match(/quit/)) {
+                // Could be a bug here, since there's no swapping between overlays it hides the arrow when you go to the main menu
                 this.__changeGamestate("mainmenu");
             }
         })

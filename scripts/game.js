@@ -67,22 +67,7 @@ export class Game {
     }
 
 
-    handleTouches() {
-        // Here we handle touch events
-        if (this.touches["touchmove"]) {
-            // Start movecommand 
-            
-        }
 
-        if (this.touches["touchend"]) {
-            // Cancel move command
-            
-        }
-
-        if (this.touches["touchmove"]) {
-            // Here we adjust the move command
-        }
-    }
 
     setupTouch() {
         // Touch listeners
@@ -103,16 +88,9 @@ export class Game {
             console.log("touchmove");
             let touches = e.changedTouches;
             this.ship.setGoal(touches[0].clientX, touches[0].clientY-canvas.getBoundingClientRect().top);
-            console.log("Here: \n", touches[0].clientY, this.screenRatio*touches[0].clientY);
             if (touches.length > 1 ) {
                 // Here we need to rotate the player
             }
-        })
-        
-        canvas.addEventListener("touchcancel", (e) => {
-            // According to MDN this occurs for example when too many points are created
-            // Could occur when the user is infact not a person but an octopus.
-            console.log("touchcancel");
         })
     }
     
@@ -397,7 +375,7 @@ export class Game {
         this.displayScore();
         this.clearScreen();
         this.handleInputs();
-        this.handleTouches();
+
         // Cache length so it only has to be calculated once per loop
         let i = this.asteroids.length - 1;
         for (i; i > -1; i--) {
@@ -406,6 +384,7 @@ export class Game {
             this.asteroids[i].render();
         }
 
+        // Automatic shooting
         if (this.timestamp - this.oldTimestamp > this.gameConfig.ship.fireRate) {
             this.ship.shoot(this.screenRatio);
             this.oldTimestamp = this.timestamp;
