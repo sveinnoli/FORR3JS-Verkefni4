@@ -74,19 +74,16 @@ export class Game {
         // Touch listeners
         canvas.addEventListener("touchstart", (e) => {
             // Here we initiate move command for ship
-            console.log("Touchstart");
             let touches = e.changedTouches;
             this.ship.setGoal(touches[0].clientX, touches[0].clientY-canvas.getBoundingClientRect().top);
         })
         
         canvas.addEventListener("touchend", (e) => {
             // Here we cancel the move command
-            console.log("touchend");
         })
         
         canvas.addEventListener("touchmove", (e) => { 
             // Here we adjust the heading 
-            console.log("touchmove");
             let touches = e.changedTouches;
             this.ship.setGoal(touches[0].clientX, touches[0].clientY-canvas.getBoundingClientRect().top);
             if (touches.length > 1 ) {
@@ -287,8 +284,8 @@ export class Game {
                             yv = Math.sin(randAng)*this.asteroids[j].yv*1.1;
                             tempAsteroids.push(new Asteroid(
                                 Math.round(Math.random()*2+6),                                                            // Sides
-                                this.asteroids[j].x + this.helper.xDirAngle(randAng, this.asteroids[j].size),   // X          
-                                this.asteroids[j].y + this.helper.yDirAngle(randAng, this.asteroids[j].size),   // Y    
+                                this.asteroids[j].x + this.helper.xDirAngle(randAng, this.asteroids[j].size/1.2),         // X          
+                                this.asteroids[j].y + this.helper.yDirAngle(randAng, this.asteroids[j].size/1.2),         // Y    
                                 xv,                                     	                                              // XV
                                 yv,                                     	                                              // YV
                                 this.asteroids[j].size/1.2,             	                                              // Size

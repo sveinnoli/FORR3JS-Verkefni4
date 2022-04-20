@@ -2,7 +2,7 @@ export const GAMECONFIG = {
     "easy" : {
         "maxAsteroids" : 12,
         "bullet" : {
-            "maxAge" : 8
+            "maxAge" : 16
         },
 
         "asteroid" : {
@@ -10,7 +10,7 @@ export const GAMECONFIG = {
         },
 
         "ship" : {
-            "fireRate" : 250
+            "fireRate" : 175
         }
 
         
@@ -19,7 +19,7 @@ export const GAMECONFIG = {
     "medium" : {
         "maxAsteroids" : 15,
         "bullet" : {
-            "maxAge" : 8
+            "maxAge" : 16
         },
 
         "asteroid" : {
@@ -34,7 +34,7 @@ export const GAMECONFIG = {
     "hard" : {
         "maxAsteroids" : 20,
         "bullet" : {
-            "maxAge" : 8
+            "maxAge" : 16
         },
 
         "asteroid" : {
@@ -42,7 +42,7 @@ export const GAMECONFIG = {
         },
 
         "ship" : {
-            "fireRate" : 150
+            "fireRate" : 225
         }
     },
 }

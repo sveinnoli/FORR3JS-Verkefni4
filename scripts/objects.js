@@ -106,8 +106,6 @@ export class Asteroid extends GameObject {
     }
 
     move() {
-        Math.random() > 0.998 ? this.xv *= -1 : 0;
-        Math.random() > 0.998 ? this.yv *= -1 : 0;
         this.x += this.xv*3*(Math.sin(Math.random()));
         this.y += this.yv*2*Math.cos(Math.random());
     }
@@ -142,7 +140,7 @@ export class Ship extends GameObject {
         this.goal.x = x; 
         this.goal.y = y;
         let angle = Math.atan2(this.goal.y - this.y-this.size/1.5, this.goal.x-this.x)*180/Math.PI;
-        if ( -2 < angle < 2) {
+        if ( -2 <= angle <= 2) {
             this.rotation = angle;
         } 
     }
