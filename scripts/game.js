@@ -21,8 +21,10 @@ export class Game {
         this.fps = 60; // Can scale it dynamically but browser runs at ~ 60 fps
         this.scoreElem = uiElements.menuElements.score;
         this.gameState = uiElements.gameState;        
-        this.screenSize = { "width": undefined, "height": undefined } 
+        this.screenSize = { "width": undefined, "height": undefined } // Gets set at runtime 
 
+        // Controls sizing and speed of objects
+        this.screenRatio;
         
         // Timings
         this.oldTimestamp = 0;
@@ -33,7 +35,6 @@ export class Game {
         this.setupKeys();
         this.setupTouch();
         this.handleResize(); // Call once on startup to adjust screen
-        this.screenRatio = canvas.height/window.innerHeight;
     }
 
     handleInputs() {
@@ -104,7 +105,8 @@ export class Game {
         })
     }
 
-    generateAsteroids(numAsteroids=this.gameConfig.maxAsteroids, spawnOutOfBounds = false) {
+    generateAsteroids(numAsteroids=this.gameConfig.maxAsteroids, spawnOutOfBounds=false) {
+        console.log(this.screenRatio, canvas.width, canvas.height, window.innerWidth, window.innerHeight);
         for (let i = 0; i < numAsteroids; i++) {
             // Here we need to dynamically scale the velocities and size based on screensize
             let size = Math.random()*12 + 25 * this.screenRatio;
@@ -133,8 +135,8 @@ export class Game {
                     y = Math.random()*canvas.height; 
                 }
             }
-            let xv = Math.random() > 0.5 ? Math.random()*0.3 + 0.4 : -Math.random()*0.3 - 0.4;
-            let yv = Math.random() > 0.5 ? Math.random()*0.3 + 0.4 : -Math.random()*0.3 - 0.4; 
+            let xv = Math.random() > 0.5 ? Math.random()*0.3 + 0.3 : -Math.random()*0.3 - 0.3;
+            let yv = Math.random() > 0.5 ? Math.random()*0.3 + 0.3 : -Math.random()*0.3 - 0.3; 
             this.asteroids.push(
                 new Asteroid(
                     Math.round(Math.random()*2+6),  // Sides
@@ -151,7 +153,7 @@ export class Game {
 
     generateShips() {
         let size = 25 * this.screenRatio;
-        this.ship = new Ship(3*this.screenRatio, 3*this.screenRatio, size, 45);
+        this.ship = new Ship(2*this.screenRatio, 2*this.screenRatio, size, 45);
     }
 
     __setup_gamestate_handler() {
@@ -197,6 +199,7 @@ export class Game {
         let newWidth = window.innerWidth;
         let newHeight = window.innerWidth / 1.778; // 16/9 aspect ratio
 
+        // Might be bugged for mobile, not properly running
         if ((this.screenSize.width && this.screenSize.height)) {
             this.__handle_dimension_change(newWidth, newHeight);
         } else {
@@ -204,13 +207,13 @@ export class Game {
             this.screenSize.width = newWidth;
             this.screenSize.height = newHeight;
         }
-
+        
         canvas.width = newWidth;
         canvas.height = newHeight;
 
         this.screenSize.width = newWidth;
         this.screenSize.height = newHeight;
-        this.screenRatio = canvas.height/window.innerHeight;
+        this.screenRatio = canvas.height/canvas.width;
     }
 
     __handle_dimension_change(newWidth, newHeight) {
@@ -352,6 +355,7 @@ export class Game {
         // Here we initialize all of our stuff
         this.generateAsteroids();
         this.generateShips();
+        this.handleResize();
         this.__changeGamestate('playing');
         this.loop();
     }

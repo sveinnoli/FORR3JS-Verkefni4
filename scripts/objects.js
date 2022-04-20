@@ -180,11 +180,11 @@ export class Ship extends GameObject {
     }
 
     rotateLeft() {
-        this.rotation = (this.rotation % 360) - 5;
+        this.rotation = (this.rotation % 360) - 3;
     }
 
     rotateRight() {
-        this.rotation = (this.rotation % 360) + 5;
+        this.rotation = (this.rotation % 360) + 3;
     }
 
     update(fps, maxAge) {
