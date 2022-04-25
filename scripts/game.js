@@ -75,7 +75,7 @@ export class Game {
         })
         
         canvas.addEventListener("touchend", (e) => {
-            this.multiGesture = {};
+            
         })
         
         canvas.addEventListener("touchmove", (e) => { 
