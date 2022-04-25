@@ -76,8 +76,8 @@ export class Asteroid extends GameObject {
         this.deviation1 = Math.random()*1+0.5;
         this.deviation2 = Math.random()*1+0.5;
         this.rotateBy = Math.random()*0.01+0.005;
-        this.stage = stage;
-        this.randLength = [];
+        this.stage = stage;   // Denotes what stage the asteroid is at, at 0 the asteroid dissapears
+        this.randLength = []; // Used to give each asteroid a unique shape
         for (let i = 0; i < this.sides; i++) {
             this.randLength.push(Math.random()*this.size*0.15+this.size/1.1);
         }
@@ -111,12 +111,14 @@ export class Asteroid extends GameObject {
     }
 
     boundaryChecking() {
+        // Y boundaries
         if (this.y + (this.size * 1.5) < 0) {
             this.y = canvas.height + this.size;
         } else if (this.y-this.size > canvas.height) {
             this.y = -this.size;
         }
 
+        // X boundaries 
         if (this.x + (this.size * 1.5) < 0) {
             this.x = canvas.width + this.size;
         } else if (this.x-this.size > canvas.width) {
@@ -135,8 +137,7 @@ export class Ship extends GameObject {
     }
 
     setGoal(x, y) {
-        // Need to offset the y axis as it takes the entire window height instead of just the canvas height
-        console.log(y);
+        // Sets a goal and rotates player towards goal
         this.goal.x = x; 
         this.goal.y = y;
         let angle = Math.atan2(this.goal.y - this.y-this.size/1.5, this.goal.x-this.x)*180/Math.PI;
