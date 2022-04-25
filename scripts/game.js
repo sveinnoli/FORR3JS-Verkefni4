@@ -17,7 +17,6 @@ export class Game {
         this.settings = {}
         this.pressedKeys = {};  
         this.touches = {};
-        this.multiGesture = {};
         this.currentAnimationFrameID;
         this.fps = 60; // Can scale it dynamically but browser runs at ~ 60 fps
         this.scoreElem = uiElements.menuElements.score;
@@ -81,22 +80,7 @@ export class Game {
         
         canvas.addEventListener("touchmove", (e) => { 
             let touches = e.changedTouches;
-            if (touches.length > 1 ) {
-                if (this.multiGesture) {
-                    this.ship.goal = {x:undefined, y:undefined};
-                    let dy = this.touches[0].clientY - this.multiGesture.touch1.y;
-                    let rotation = dy/canvas.height * 360*2; 
-                    if (dy < 0) {
-                        this.ship.rotation += 10;
-                    } else {
-                        this.ship.rotation -= 10;
-                    }
-                } 
-                this.multiGesture.touch1 = {x: touches[0].clientX, y: touches[0].clientY};
-                this.multiGesture.touch2 = {x: touches[1].clientX, y: touches[1].clientY};
-            } else {
-                this.ship.setGoal(touches[0].clientX, touches[0].clientY-canvas.getBoundingClientRect().top);
-            }
+            this.ship.setGoal(touches[0].clientX, touches[0].clientY-canvas.getBoundingClientRect().top);
         })
     }
     
