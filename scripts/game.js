@@ -325,9 +325,15 @@ export class Game {
 
     initGame(settings) {
         this.settings = settings;
-        this.gameConfig = GAMECONFIG[settings.difficulty];
+        this.gameConfig = {...GAMECONFIG[settings.difficulty]};
+        console.log(GAMECONFIG)
+        // JS is creating a reference to the original data so
+        // It overwrites fireRate and can't go back to the original
+        // Need to use another solution
         if (settings.mode === "cheat") {
             this.gameConfig.ship.fireRate = 1;
+        } else {
+            this.gameConfig.ship.fireRate = GAMECONFIG[settings.difficulty].ship.fireRate;
         }
         this.start();
     }    
