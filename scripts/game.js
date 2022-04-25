@@ -86,7 +86,11 @@ export class Game {
                     this.ship.goal = {x:undefined, y:undefined};
                     let dy = this.touches[0].clientY - this.multiGesture.touch1.y;
                     let rotation = dy/canvas.height * 360*2; 
-                    this.ship.rotation += rotation;
+                    if (dy < 0) {
+                        this.ship.rotation += 10;
+                    } else {
+                        this.ship.rotation -= 10;
+                    }
                 } 
                 this.multiGesture.touch1 = {x: touches[0].clientX, y: touches[0].clientY};
                 this.multiGesture.touch2 = {x: touches[1].clientX, y: touches[1].clientY};
