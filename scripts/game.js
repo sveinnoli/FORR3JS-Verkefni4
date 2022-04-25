@@ -68,9 +68,6 @@ export class Game {
         this.scoreElem.textContent = `Score: ${this.score.toFixed(2)}`;
     }
 
-
-
-
     setupTouch() {
         // Touch listeners
         canvas.addEventListener("touchstart", (e) => {
@@ -84,20 +81,17 @@ export class Game {
         
         canvas.addEventListener("touchmove", (e) => { 
             let touches = e.changedTouches;
-            this.ship.setGoal(touches[0].clientX, touches[0].clientY-canvas.getBoundingClientRect().top);
             if (touches.length > 1 ) {
                 if (this.multiGesture) {
                     this.ship.goal = {x:undefined, y:undefined};
                     let dy = this.touches[0].clientY - this.multiGesture.touch1.y;
-                    let rotation = dy/canvas.height * 360*4; 
-                    if (dy < 0) {
-                        this.ship.rotation += 10;
-                    } else {
-                        this.ship.rotation -= 10;
-                    }
+                    let rotation = dy/canvas.height * 360*2; 
+                    this.ship.rotation += rotation;
                 } 
                 this.multiGesture.touch1 = {x: touches[0].clientX, y: touches[0].clientY};
                 this.multiGesture.touch2 = {x: touches[1].clientX, y: touches[1].clientY};
+            } else {
+                this.ship.setGoal(touches[0].clientX, touches[0].clientY-canvas.getBoundingClientRect().top);
             }
         })
     }
@@ -113,7 +107,6 @@ export class Game {
     }
 
     generateAsteroids(numAsteroids=this.gameConfig.maxAsteroids, spawnOutOfBounds=false) {
-        console.log(this.screenRatio, canvas.width, canvas.height, window.innerWidth, window.innerHeight);
         for (let i = 0; i < numAsteroids; i++) {
             // Here we need to dynamically scale the velocities and size based on screensize
             let size = Math.random()*12 + 25 * this.screenRatio;
