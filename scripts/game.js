@@ -93,7 +93,7 @@ export class Game {
                     if (dy < 0) {
                         this.ship.rotation += 10;
                     } else {
-                        this.ship.rotation += 10;
+                        this.ship.rotation -= 10;
                     }
                 } 
                 this.multiGesture.touch1 = {x: touches[0].clientX, y: touches[0].clientY};
