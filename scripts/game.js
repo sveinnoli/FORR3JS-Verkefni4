@@ -16,7 +16,8 @@ export class Game {
         this.gameConfig = {};
         this.settings = {}
         this.pressedKeys = {};  
-        this.touches = {}
+        this.touches = {};
+        this.multiGesture = {};
         this.currentAnimationFrameID;
         this.fps = 60; // Can scale it dynamically but browser runs at ~ 60 fps
         this.scoreElem = uiElements.menuElements.score;
@@ -73,21 +74,29 @@ export class Game {
     setupTouch() {
         // Touch listeners
         canvas.addEventListener("touchstart", (e) => {
-            // Here we initiate move command for ship
             let touches = e.changedTouches;
             this.ship.setGoal(touches[0].clientX, touches[0].clientY-canvas.getBoundingClientRect().top);
         })
         
         canvas.addEventListener("touchend", (e) => {
-            // Here we cancel the move command
+            this.multiGesture = {};
         })
         
         canvas.addEventListener("touchmove", (e) => { 
-            // Here we adjust the heading 
             let touches = e.changedTouches;
             this.ship.setGoal(touches[0].clientX, touches[0].clientY-canvas.getBoundingClientRect().top);
             if (touches.length > 1 ) {
-                // Here we need to rotate the player
+                if (this.multiGesture) {
+                    this.ship.goal = {x:undefined, y:undefined};
+                    let dy = this.touches[0].clientY - this.multiGesture.touch1.y;
+                    if (dy < 0) {
+                        this.ship.rotation++;
+                    } else {
+                        this.ship.rotation--;
+                    }
+                } 
+                this.multiGesture.touch1 = {x: touches[0].clientX, y: touches[0].clientY};
+                this.multiGesture.touch2 = {x: touches[1].clientX, y: touches[1].clientY};
             }
         })
     }
