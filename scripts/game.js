@@ -187,21 +187,16 @@ export class Game {
         let newWidth = window.innerWidth;
         let newHeight = window.innerWidth / 1.778; // 16/9 aspect ratio
 
-        // Might be bugged for mobile, not properly running
+        // Runs only when the game has been initialized before
         if ((this.screenSize.width && this.screenSize.height)) {
             this.__handle_dimension_change(newWidth, newHeight);
-        } else {
-            // First time running
-            this.screenSize.width = newWidth;
-            this.screenSize.height = newHeight;
-        }
+        } 
         
-        canvas.width = newWidth;
-        canvas.height = newHeight;
-
         this.screenSize.width = newWidth;
         this.screenSize.height = newHeight;
-        this.screenRatio = canvas.height/canvas.width;
+        canvas.width = newWidth;
+        canvas.height = newHeight;
+        this.screenRatio = canvas.height/1080; // Default height 1080
     }
 
     __handle_dimension_change(newWidth, newHeight) {
@@ -326,10 +321,6 @@ export class Game {
     initGame(settings) {
         this.settings = settings;
         this.gameConfig = {...GAMECONFIG[settings.difficulty]};
-        console.log(GAMECONFIG)
-        // JS is creating a reference to the original data so
-        // It overwrites fireRate and can't go back to the original
-        // Need to use another solution
         if (settings.mode === "cheat") {
             this.gameConfig.ship.fireRate = 1;
         } else {

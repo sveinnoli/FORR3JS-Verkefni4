@@ -45,6 +45,4 @@ export const GAMECONFIG = {
             "fireRate" : 225
         }
     },
-
-    
 }
