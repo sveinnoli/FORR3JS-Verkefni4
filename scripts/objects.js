@@ -51,6 +51,8 @@ class Bullet extends GameObject {
         ctx.beginPath();
         ctx.rect(this.x, this.y, this.size, this.size);
         ctx.fill();
+        ctx.lineWidth = 0.75;
+        ctx.stroke();
     }
 }
 
