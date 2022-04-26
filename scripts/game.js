@@ -209,14 +209,14 @@ export class Game {
             this.ship.x *= widthRatio;
             this.ship.y *= heightRatio;
             this.ship.size *= heightRatio;
-            this.ship.xv *= heightRatio;
+            this.ship.xv *= widthRatio;
             this.ship.yv *= heightRatio;
             if (this.ship.bullets) {
                 for (let i = 0; i < this.ship.bullets.length; i++) {
                     let bullet = this.ship.bullets[i];
-                    bullet.x *= heightRatio;
+                    bullet.x *= widthRatio;
                     bullet.y *= heightRatio;
-                    bullet.xv *= heightRatio;
+                    bullet.xv *= widthRatio;
                     bullet.yv *= heightRatio;
                     bullet.size *= heightRatio;
                 }
@@ -229,7 +229,7 @@ export class Game {
                 asteroid.x *= widthRatio;
                 asteroid.y *= heightRatio;
                 asteroid.size *= heightRatio;
-                asteroid.xv *= heightRatio;
+                asteroid.xv *= widthRatio;
                 asteroid.yv *= heightRatio;
                 asteroid.newRand();
             }
