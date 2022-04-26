@@ -16,9 +16,9 @@ export class Game {
         this.gameConfig = {};
         this.settings = {}
         this.pressedKeys = {};  
-        this.touches = {};
+        this.timeout;                       // Adds a timeout to resize callback function to avoid resizing more than once per resize
         this.currentAnimationFrameID;
-        this.fps = 60; // Can scale it dynamically but browser runs at ~ 60 fps
+        this.fps = 60;                      // Can scale it dynamically but browser runs at ~ 60 fps
         this.scoreElem = uiElements.menuElements.score;
         this.gameState = uiElements.gameState;        
         this.screenSize = { "width": undefined, "height": undefined } // Gets set at runtime 
@@ -130,8 +130,8 @@ export class Game {
                     Math.round(Math.random()*2+6),  // Sides
                     x,                              // X
                     y,                              // Y
-                    xv*this.screenRatio,                             // XV
-                    yv*this.screenRatio,                             // YV
+                    xv*this.screenRatio,            // XV
+                    yv*this.screenRatio,            // YV
                     size,                           // Size
                     Math.random()*360,              // Rotation
                     2                               // Stage
@@ -140,7 +140,7 @@ export class Game {
     }
 
     generateShips() {
-        let size = 25 * this.screenRatio;
+        let size = 30 * this.screenRatio;
         this.ship = new Ship(2*this.screenRatio, 2*this.screenRatio, size, 45);
     }
 
@@ -174,9 +174,7 @@ export class Game {
         window.requestAnimationFrame(this.loop.bind(this));
     }
 
-    /* 
-        Here i may wish to move resize handling over to the UserInterface class
-    */
+    // resizes all components and screensize on resize event
     handleResize() {
         let gameState = this.gameState.getAttribute("gamestate")
         if (gameState.match(/playing|resume/)) {
@@ -196,12 +194,10 @@ export class Game {
         this.screenSize.height = newHeight;
         canvas.width = newWidth;
         canvas.height = newHeight;
-        this.screenRatio = canvas.height/1080; // Default height 1080
+        this.screenRatio = canvas.height/1080; // Baseline height 1080px
     }
 
     __handle_dimension_change(newWidth, newHeight) {
-        // TODO make it only calculate after x time has passed to avoid
-        // calculating hundreds of times per second
         let widthRatio = newWidth/this.screenSize.width;
         let heightRatio = newHeight/this.screenSize.height;
         // Sets ship on new position according to the ratio of the old screensize and new screensize and resizes them
@@ -293,13 +289,14 @@ export class Game {
                 this.__changeGamestate("defeat")
             }
         }
+        // Filter out dead asteroids and bullets
         this.asteroids = this.asteroids.filter(asteroid => asteroid.size > 0);
+        this.ship.bullets = this.ship.bullets.filter(bullet => bullet.age < this.gameConfig.bullet.maxAge);
 
         // Spawn more asteroids in the field when the number has gone below a certain threshold
         if (this.asteroids.length <= this.gameConfig.maxAsteroids/1.5) {
             this.generateAsteroids(this.gameConfig.maxAsteroids/1.5, true);
         }
-        this.ship.bullets = this.ship.bullets.filter(bullet => bullet.age < this.gameConfig.bullet.maxAge);
 
 
         // Add the new asteroids onto the field 
@@ -311,20 +308,43 @@ export class Game {
     }
 
     __setup_event_handlers() {
-        window.addEventListener("resize", this.handleResize.bind(this));
+        window.addEventListener("resize", () => {
+            clearTimeout(this.timeout);
+            this.timeout = setTimeout(this.handleResize.bind(this), 20);
+        })
     }
 
     __changeGamestate(newState) {
         this.gameState.setAttribute('gamestate', newState)
     }
 
+    cloneObj(source) {
+        if (Object.prototype.toString.call(source) === '[object Array]') {
+            var clone = [];
+            for (var i=0; i<source.length; i++) {
+                clone[i] = this.cloneObj(source[i]);
+            }
+            return clone;
+        } else if (typeof(source)=="object") {
+            var clone = {};
+            for (var prop in source) {
+                if (source.hasOwnProperty(prop)) {
+                    clone[prop] = this.cloneObj(source[prop]);
+                }
+            }
+            return clone;
+        } else {
+            return source;
+        }
+    }
+
     initGame(settings) {
         this.settings = settings;
-        this.gameConfig = {...GAMECONFIG[settings.difficulty]};
+        this.gameConfig = this.cloneObj(GAMECONFIG[settings.difficulty]);
         if (settings.mode === "cheat") {
             this.gameConfig.ship.fireRate = 1;
         } else {
-            this.gameConfig.ship.fireRate = GAMECONFIG[settings.difficulty].ship.fireRate;
+            this.gameConfig.ship.fireRate = GAMECONFIG[this.settings.difficulty].ship.fireRate;
         }
         this.start();
     }    

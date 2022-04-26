@@ -86,7 +86,7 @@ export class Asteroid extends GameObject {
     newRand() {
         this.randLength = [];
         for (let i = 0; i < this.sides; i++) {
-            this.randLength.push(Math.random()*this.size*0.15+this.size/1.1);
+            this.randLength.push(Math.random()*this.size*0.15+this.size+0.01);
         }
     }
 
@@ -101,6 +101,8 @@ export class Asteroid extends GameObject {
         for(let i = 0; i <= this.sides; i++) {
             ctx.lineTo(this.x + ( Math.cos( fullRotation * (i / this.sides) + this.rotation ) * this.randLength[i]), this.y + ( Math.sin( fullRotation * (i / this.sides) + this.rotation) * this.randLength[i]) );
         }   
+        // Close last side
+        ctx.lineTo(this.x + ( Math.cos( fullRotation * (0 / this.sides) + this.rotation ) * this.randLength[0]), this.y + ( Math.sin( fullRotation * (0 / this.sides) + this.rotation) * this.randLength[0]) );
         ctx.fill();
         ctx.stroke();
     }
@@ -148,11 +150,11 @@ export class Ship extends GameObject {
 
     moveCommand() {
         if (this.goal.x && this.goal.y) {
-            let dx = this.x-this.goal.x;
-            let dy = this.y-this.goal.y;
+            let dx = Math.abs(this.x-this.goal.x);
+            let dy = Math.abs(this.y-this.goal.y);
 
             // Only move forward if we are not on our goal already 
-            if (Math.abs(dx) + Math.abs(dy) > this.size) {
+            if (dx + dy > this.size) {
                 this.moveForward();
             } else {
                 // Remove the goal
@@ -230,7 +232,7 @@ export class Ship extends GameObject {
         ctx.arc(x, y, this.size, startAngle, endAngle);
         ctx.lineTo(x, y);
         ctx.closePath();
-        ctx.lineWidth = 2;
+        ctx.lineWidth = 1;
         ctx.strokeStyle = '#77ffff';
         ctx.fillStyle = "#0a4b78";
         ctx.fill();
