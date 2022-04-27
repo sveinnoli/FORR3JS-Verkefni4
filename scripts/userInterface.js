@@ -126,12 +126,15 @@ export class UserInterface {
         // Settings menu 
         settingsMenu.addEventListener('click', (e) => {
             this.config.mode = e.target.getAttribute('data-option');
+            // Change classlist based on what was selected
         })
         
         // Difficulty menu
         difficultyMenu.addEventListener('click', (e) => {
             this.config.difficulty = e.target.getAttribute('data-option');
             // Can add color to the currently selected option
+
+            // Change classlist based on what was selected
         }) 
 
         // Pause menu

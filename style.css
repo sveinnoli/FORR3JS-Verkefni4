@@ -255,6 +255,10 @@ body {
     height: 100%;
 }
 
+.options__menu-selected {
+    background-color: green;
+}
+
 @media screen and (max-width: 1280px) {
     .container {
         width: 768px;

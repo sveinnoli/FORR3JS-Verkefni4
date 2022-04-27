@@ -165,7 +165,6 @@ export class Game {
         observer.observe(this.gameState, { attributes: true});
     }
 
-    // Used to resume the game from the pause menu
     __pause_game() {
         window.cancelAnimationFrame(this.currentAnimationFrameID);
     }
@@ -318,6 +317,7 @@ export class Game {
         this.gameState.setAttribute('gamestate', newState)
     }
 
+    // Clones an object instead of creating a reference to it
     cloneObj(source) {
         if (Object.prototype.toString.call(source) === '[object Array]') {
             var clone = [];
